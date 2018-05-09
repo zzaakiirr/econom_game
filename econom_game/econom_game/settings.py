@@ -38,11 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-<<<<<<< HEAD
     'stations',
-=======
     'teams',
->>>>>>> dev_teams
+    'transactions',
 ]
 
 MIDDLEWARE = [
