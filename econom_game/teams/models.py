@@ -10,9 +10,15 @@ class Card(models.Model):
     )
     money_amount = models.PositiveIntegerField()
 
+    def __str__(self):
+        return self.id
+
 
 class Team(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=25)
     login = models.CharField(max_length=25)
     card = models.ForeignKey(Card, related_name='card')
+
+    def __str__(self):
+        return self.name
