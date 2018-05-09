@@ -7,11 +7,19 @@ class Transaction(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
 
     sender_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        default=None)
+        ContentType, on_delete=models.CASCADE,
+        default=None, related_name='sender',
+    )
+
     sender_id = models.PositiveIntegerField(default=None)
     sender = GenericForeignKey('sender_type', 'sender_id')
+
+    recipient_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE,
+        default=None, related_name='recipient',
+    )
+    recipient_id = models.PositiveIntegerField(default=None)
+    recipient = GenericForeignKey('recipient_type', 'recipient_id')
 
     amount = models.PositiveIntegerField()
     datetime = models.DateTimeField(auto_now_add=True)
