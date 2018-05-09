@@ -13,6 +13,6 @@ class Card(models.Model):
 
 class Team(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
-    team_name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25)
     login = models.CharField(max_length=25)
     card = models.ForeignKey(Card, related_name='card')
