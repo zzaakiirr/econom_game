@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 
 
 class Card(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
+    id = models.PositiveIntegerField(primary_key=True, unique=True)
     cvv = models.CharField(
         max_length=3,
         validators=[RegexValidator(r'^\d{1,10}$')]
@@ -15,7 +15,7 @@ class Card(models.Model):
 
 
 class Team(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
+    id = models.PositiveIntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=25)
     login = models.CharField(max_length=25)
     card = models.ForeignKey(Card, related_name='card')
