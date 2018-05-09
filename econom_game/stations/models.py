@@ -3,8 +3,8 @@ from django.core.validators import RegexValidator
 
 
 class Station(models.Model):
-    station_id = models.PositiveIntegerField(primary_key=True, unique=True)
-    station_name = models.CharField(max_length=30)
+    id = models.PositiveIntegerField(primary_key=True, unique=True)
+    name = models.CharField(max_length=30)
     complexity = models.CharField(
         max_length=1,
         validators=[RegexValidator(r'^\d{2,3}$')]
