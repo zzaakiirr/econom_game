@@ -11,3 +11,6 @@ class Station(models.Model):
     )
     min_bet = models.PositiveIntegerField()
     max_bet = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
