@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import MaxValueValidator
 
 
 class Team(models.Model):
@@ -13,10 +13,7 @@ class Team(models.Model):
 
 class Card(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
-    cvv = models.CharField(
-        max_length=3,
-        validators=[RegexValidator(r'^\d{1,10}$')]
-    )
+    cvv = models.PositiveIntegerField(validators=[MaxValueValidator(999)])
     money_amount = models.PositiveIntegerField()
     team = models.ForeignKey(Team, related_name='team', default=None)
 
