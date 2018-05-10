@@ -25,4 +25,4 @@ class Transaction(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.id)
+        return 'transaction_%d' % self.id
