@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 class Transaction(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
 
-    Team_or_Station = (
+    CONTENT_TYPE_CHOICES = (
         models.Q(app_label='teams', model='team') |
         models.Q(app_label='stations', model='station')
     )
@@ -14,7 +14,7 @@ class Transaction(models.Model):
     sender_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE,
         default=None, related_name='sender',
-        limit_choices_to=Team_or_Station,
+        limit_choices_to=CONTENT_TYPE_CHOICES,
     )
 
     sender_id = models.PositiveIntegerField(default=None)
@@ -23,7 +23,7 @@ class Transaction(models.Model):
     recipient_type = models.ForeignKey(
         ContentType, on_delete=models.CASCADE,
         default=None, related_name='recipient',
-        limit_choices_to=Team_or_Station,
+        limit_choices_to=CONTENT_TYPE_CHOICES,
     )
     recipient_id = models.PositiveIntegerField(default=None)
     recipient = GenericForeignKey('recipient_type', 'recipient_id')
