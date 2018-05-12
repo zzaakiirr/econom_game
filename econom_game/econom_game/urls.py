@@ -23,16 +23,16 @@ from stations import views as stations_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(
-        r'^api/teams/$',
+        r'^api/m=get_all_teams/$',
         teams_views.ListTeamsView.as_view(),
-        name='teams-all'
+        name='all_teams'
     ),
     url(
-        r'^api/stations/$',
+        r'^api/m=get_all_stations/$',
         stations_views.ListStationsView.as_view(),
-        name='stations-all'
+        name='all_stations'
     ),
-    url(r'^api/create_station/$',
+    url(r'^api/m=create_station/$',
         stations_views.create_station,
         name='create_station'
     )

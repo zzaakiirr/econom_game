@@ -16,7 +16,7 @@ class BaseViewTest(APITestCase):
             complexity=2, min_bet=100, max_bet=200,
         )
 
-        url = reverse("stations-all")
+        url = reverse("all_stations")
         self.response = self.client.get(url)
 
 
@@ -26,7 +26,7 @@ class GetAllTeamsTest(BaseViewTest):
         self.assertEquals(self.response.status_code, status.HTTP_200_OK)
 
     def test_get_all_stations_url_resolves_get_all_stations_view(self):
-        view = resolve('/api/stations/')
+        view = resolve('/api/m=get_all_stations/')
         self.assertEquals(view.func.view_class, ListStationsView)
 
     def test_get_all_stations_return_correct_data(self):
