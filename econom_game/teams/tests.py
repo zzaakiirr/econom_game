@@ -2,9 +2,9 @@ from django.urls import reverse, resolve
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
 
-from teams.models import Team, Card
-from teams.serializers import TeamSerializer
-from teams.views import ListTeamsView
+from .models import Team, Card
+from .serializers import TeamSerializer
+from .views import ListTeamsView, create_team
 
 
 class BaseViewTest(APITestCase):
@@ -19,7 +19,6 @@ class BaseViewTest(APITestCase):
 
 
 class GetAllTeamsTest(BaseViewTest):
-
     def test_get_all_teams_view_success_status_code(self):
         self.assertEquals(self.response.status_code, status.HTTP_200_OK)
 
@@ -31,3 +30,12 @@ class GetAllTeamsTest(BaseViewTest):
         expected = Team.objects.all()
         serialized = TeamSerializer(expected, many=True)
         self.assertEquals(self.response.data, serialized.data)
+
+
+class CreateTeamTest(BaseViewTest):
+    def test_create_team_view_success_status_code(self):
+        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+
+    def test_create_team_url_resolves_create_team_view(self):
+        view = resolve('/api/m=create_team/')
+        self.assertEquals(view.func, create_team)

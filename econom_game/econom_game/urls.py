@@ -37,4 +37,9 @@ urlpatterns = [
         stations_views.create_station,
         name='create_station'
     ),
+    url(
+        r'^api/m=create_team/$',
+        teams_views.create_team,
+        name='create_team'
+    ),
 ]
