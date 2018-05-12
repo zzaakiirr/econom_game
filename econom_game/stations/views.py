@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.views import status
 from rest_framework.response import Response
@@ -11,19 +12,20 @@ class ListStationsView(generics.ListAPIView):
     queryset = Station.objects.all()
     serializer_class = StationSerializer
 
-        # return Response(serialized.data, status=status.HTTP_201_CREATED)
-    # else:
-    #     return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 def create_station(request):
     id = request.GET['id']
-    stations_count = Station.objects.count()
+    name = request.GET['name']
+    complexity = request.GET['complexity']
+    min_bet = request.GET['min_bet']
+    max_bet = request.GET['max_bet']
+
+    old_stations_count = Station.objects.count()
     new_station = Station.objects.create(
-        id=id, name="station_2",
-        complexity=2, min_bet=1, max_bet=2
+        id=id, name=name,
+        complexity=complexity, min_bet=min_bet, max_bet=max_bet
     )
     new_station.save()
-    if(Station.objects.count() == stations_count + 1):
-        return Response({"status": True}, status=status.HTTP_201_CREATED)
-    return {"status": False}
+    new_station_count = Station.objects.count() 
+    if new_station_count == old_count_before + 1:
+        return JsonResponse({"status": True})
