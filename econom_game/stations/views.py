@@ -26,6 +26,6 @@ def create_station(request):
         complexity=complexity, min_bet=min_bet, max_bet=max_bet
     )
     new_station.save()
-    new_station_count = Station.objects.count() 
-    if new_station_count == old_count_before + 1:
+    new_stations_count = Station.objects.count()
+    if new_stations_count == old_stations_count + 1:
         return JsonResponse({"status": True})
