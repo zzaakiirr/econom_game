@@ -16,11 +16,24 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from teams.views import ListTeamsView
-from stations.views import ListStationsView
+from teams import views as teams_views
+from stations import views as stations_views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/teams/$', ListTeamsView.as_view(), name='teams-all'),
-    url(r'^api/stations/$', ListStationsView.as_view(), name='stations-all'),
+    url(
+        r'^api/teams/$',
+        teams_views.ListTeamsView.as_view(),
+        name='teams-all'
+    ),
+    url(
+        r'^api/stations/$',
+        stations_views.ListStationsView.as_view(),
+        name='stations-all'
+    ),
+    url(r'^api/create_station/$',
+        stations_views.create_station,
+        name='create_station'
+    )
 ]
