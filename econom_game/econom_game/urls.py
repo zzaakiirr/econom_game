@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from teams.views import ListTeamsView
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^api/teams/$', ListTeamsView.as_view(), name='teams-all'),
 ]
