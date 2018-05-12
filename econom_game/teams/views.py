@@ -29,3 +29,18 @@ def create_team(request):
     if new_teams_count == old_teams_count + 1:
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_card(request):
+    id = request.GET['id']
+    cvv = request.GET['name']
+    money_amount = request.GET['money_amount']
+
+    old_cards_count = Card.objects.count()
+    new_card = Card.objects.create(id=id, cvv=cvv, money_amount=money_amount)
+    new_card.save()
+    new_cards_count = Card.objects.count()
+    if new_teams_count == old_teams_count + 1:
+        return JsonResponse({"status": True})
+    return JsonResponse({"status": False})

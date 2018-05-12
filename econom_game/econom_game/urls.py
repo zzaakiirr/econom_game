@@ -42,4 +42,9 @@ urlpatterns = [
         teams_views.create_team,
         name='create_team'
     ),
+    url(
+        r'^api/m=create_card/$',
+        teams_views.create_team,
+        name='create_card'
+    ),
 ]
