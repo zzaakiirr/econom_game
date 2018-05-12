@@ -1,3 +1,10 @@
 from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .models import Station
+from .serializers import StationSerializer
+
+
+class ListStationsView(generics.ListAPIView):
+    queryset = Station.objects.all()
+    serializer_class = StationSerializer

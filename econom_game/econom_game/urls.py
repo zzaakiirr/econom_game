@@ -17,8 +17,10 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from teams.views import ListTeamsView
+from stations.views import ListStationsView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/teams/$', ListTeamsView.as_view(), name='teams-all'),
+    url(r'^api/stations/$', ListStationsView.as_view(), name='stations-all'),
 ]
