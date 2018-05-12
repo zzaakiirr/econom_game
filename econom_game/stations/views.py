@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth.decorators import user_passes_test
+
 from rest_framework import generics
 from rest_framework.views import status
 from rest_framework.response import Response
@@ -13,6 +15,7 @@ class ListStationsView(generics.ListAPIView):
     serializer_class = StationSerializer
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def create_station(request):
     id = request.GET['id']
     name = request.GET['name']
@@ -29,3 +32,4 @@ def create_station(request):
     new_stations_count = Station.objects.count()
     if new_stations_count == old_stations_count + 1:
         return JsonResponse({"status": True})
+    return JsonResponse({"status": False})

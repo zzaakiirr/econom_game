@@ -1,10 +1,11 @@
 from django.urls import reverse, resolve
+from django.test import TestCase
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
 
 from .models import Station
 from .serializers import StationSerializer
-from .views import ListStationsView
+from .views import ListStationsView, create_station
 
 
 class BaseViewTest(APITestCase):
@@ -20,8 +21,7 @@ class BaseViewTest(APITestCase):
         self.response = self.client.get(url)
 
 
-class GetAllTeamsTest(BaseViewTest):
-
+class GetAllStationsTest(BaseViewTest):
     def test_get_all_stations_view_success_status_code(self):
         self.assertEquals(self.response.status_code, status.HTTP_200_OK)
 
@@ -33,3 +33,12 @@ class GetAllTeamsTest(BaseViewTest):
         expected = Station.objects.all()
         serialized = StationSerializer(expected, many=True)
         self.assertEquals(self.response.data, serialized.data)
+
+
+class CreateStationTest(BaseViewTest):
+    def test_create_station_view_success_status_code(self):
+        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+
+    def test_create_station_url_resolves_create_station_view(self):
+        view = resolve('/api/m=create_station/')
+        self.assertEquals(view.func, create_station)

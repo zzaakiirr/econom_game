@@ -32,8 +32,9 @@ urlpatterns = [
         stations_views.ListStationsView.as_view(),
         name='all_stations'
     ),
-    url(r'^api/m=create_station/$',
+    url(
+        r'^api/m=create_station/$',
         stations_views.create_station,
         name='create_station'
-    )
+    ),
 ]
