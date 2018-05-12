@@ -1,8 +1,10 @@
-from django.urls import reverse
+from django.urls import reverse, resolve
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
+
 from teams.models import Team, Card
 from teams.serializers import TeamSerializer
+from teams.views import ListTeamsView
 
 
 class BaseViewTest(APITestCase):
@@ -26,3 +28,7 @@ class GetAllTeamsTest(BaseViewTest):
 
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_view_function(self):
+        view = resolve('/api/teams/')
+        self.assertEquals(view.func.view_class, ListTeamsView)
