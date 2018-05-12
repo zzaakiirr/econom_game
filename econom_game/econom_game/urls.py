@@ -44,7 +44,7 @@ urlpatterns = [
     ),
     url(
         r'^api/m=create_card/$',
-        teams_views.create_team,
+        teams_views.create_card,
         name='create_card'
     ),
 ]
