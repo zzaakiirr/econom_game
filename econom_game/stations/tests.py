@@ -8,7 +8,7 @@ from .serializers import StationSerializer
 from .views import ListStationsView, create_station
 
 
-class BaseViewTest(APITestCase):
+class BaseViewTest(TestCase):
     def setUp(self):
         Station.objects.create(
             id=1000, name="station_1",
