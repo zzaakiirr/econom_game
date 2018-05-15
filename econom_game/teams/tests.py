@@ -1,5 +1,6 @@
 from django.urls import reverse, resolve
-from django.test import TestCase
+from django.test import TestCase, Client
+import urllib
 
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
@@ -34,12 +35,16 @@ class GetAllTeamsTest(BaseViewTest):
         self.assertEquals(self.response.data, serialized.data)
 
 
-class CreateTeamTest(APITestCase):
-    client = APIClient()
-
-    def setUp(self):
-        url = reverse("create_team")
-        self.response = self.client.get(url)
+class CreateTeamTest(TestCase):
+    card_create_for_test = Card.objects.create(
+        id=999, cvv=990, money_amount=999)
+    client = Client()
+    client.login(username='admin', password='password123')
+    url = (
+        "%s?id=898&name=team_999&login=team_997&card_id=999" %
+        reverse("create_team")
+    )
+    response = client.get(url)
 
     def test_create_team_view_success_status_code(self):
         self.assertEquals(self.response.status_code, status.HTTP_200_OK)
@@ -48,17 +53,24 @@ class CreateTeamTest(APITestCase):
         view = resolve('/api/m=create_team/')
         self.assertEquals(view.func, create_team)
 
+    card_create_for_test.delete()
 
-class CreateCardTest(APITestCase):
-    client = APIClient()
 
-    def setUp(self):
-        url = reverse("create_card")
-        self.response = self.client.get(url)
+class CreateCardTest(TestCase):
+    client = Client()
+    client.login(username='admin', password='password123')
+    url = (
+        "%s?id=999&cvv=999&money_amount=999" %
+        reverse("create_card")
+    )
+    response = client.get(url)
 
-    def test_create_card_view_success_status_code(self):
+    def test_create_team_view_success_status_code(self):
         self.assertEquals(self.response.status_code, status.HTTP_200_OK)
 
     def test_create_card_url_resolves_create_card_view(self):
         view = resolve('/api/m=create_card/')
         self.assertEquals(view.func, create_card)
+
+    card_created_for_test = Card.objects.get(id=999)
+    card_created_for_test.delete()
