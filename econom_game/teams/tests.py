@@ -2,7 +2,6 @@ from django.urls import reverse, resolve
 from django.test import TestCase, Client
 import urllib
 
-from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
 
 from .models import Team, Card
@@ -10,9 +9,7 @@ from .serializers import TeamSerializer
 from .views import ListTeamsView, create_team, create_card
 
 
-class BaseViewTest(APITestCase):
-    client = APIClient()
-
+class BaseViewTest(TestCase):
     def setUp(self):
         card = Card.objects.create(id=1000, cvv=999, money_amount=999)
         Team.objects.create(id=1000, name="team_1", login="team_1", card=card)

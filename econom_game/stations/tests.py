@@ -1,6 +1,6 @@
 from django.urls import reverse, resolve
 from django.test import TestCase, Client
-from rest_framework.test import APITestCase, APIClient
+
 from rest_framework.views import status
 
 from .models import Station
@@ -9,8 +9,6 @@ from .views import ListStationsView, create_station
 
 
 class BaseViewTest(APITestCase):
-    client = APIClient()
-
     def setUp(self):
         Station.objects.create(
             id=1000, name="station_1",
