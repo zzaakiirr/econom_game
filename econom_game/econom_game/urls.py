@@ -18,6 +18,7 @@ from django.contrib import admin
 
 from teams import views as teams_views
 from stations import views as stations_views
+from transactions import views as transactions_views
 
 
 urlpatterns = [
@@ -47,4 +48,9 @@ urlpatterns = [
         teams_views.create_card,
         name='create_card'
     ),
+    url(
+        r'^api/m=make_transaction/$',
+        transactions_views.make_transaction,
+        name='make_transaction'
+    )
 ]
