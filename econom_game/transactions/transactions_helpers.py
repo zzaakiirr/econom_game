@@ -1,5 +1,3 @@
-from django.db.models import Count
-
 from stations.models import Station
 from teams.models import Team
 from transactions.models import Transaction
