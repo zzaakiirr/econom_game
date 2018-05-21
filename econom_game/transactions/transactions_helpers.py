@@ -52,7 +52,7 @@ def make_a_bet_at_the_station(sender_id, recipient_id, bet_amount):
 
 def get_money_from_station(sender_id, recipient_id, bet_amount):
     station = Station.objects.get(id=sender_id)
-    team = Teams.objects.get(id=recipient_id)
+    team = Team.objects.get(id=recipient_id)
     card = team.card
     card.money_amount += bet_amount * station.complexity
     card.save()
