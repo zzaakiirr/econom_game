@@ -1,5 +1,8 @@
+from django.db.models import Count
+
 from stations.models import Station
 from teams.models import Team
+from transactions.models import Transaction
 
 
 def get_transaction_participant_id(transaction_participant):
@@ -66,4 +69,28 @@ def get_transaction_result(sender, recipient, bet_amount):
     else:
         result = get_money_from_station(sender_id, recipient_id, bet_amount)
 
+    if result['status']:
+        add_transaction_to_database(sender, recipient, bet_amount)
     return result
+
+
+def add_transaction_to_database(sender, recipient, bet_amount):
+    last_transaction_id = Transaction.objects.count()
+    sender_id = get_transaction_participant_id(sender)
+    recipient_id = get_transaction_participant_id(recipient)
+    if is_team(sender):
+        sender = Team.objects.get(id=sender_id)
+        recipient = Station.objects.get(id=recipient_id)
+    else:
+        sender = Station.objects.get(id=sender_id)
+        recipient = Team.objects.get(id=recipient_id)
+
+    transaction = Transaction(
+        id=last_transaction_id+1,
+        sender=sender,
+        sender_id=sender_id,
+        recipient=recipient,
+        recipient_id=recipient_id,
+        amount=bet_amount
+    )
+    transaction.save()
