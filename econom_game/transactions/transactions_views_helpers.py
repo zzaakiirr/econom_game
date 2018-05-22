@@ -27,7 +27,7 @@ def is_enough_money_on_the_card(station, card):
         return True
 
 
-def make_a_bet_at_the_station(sender_id, recipient_id, bet_amount):
+def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
     team = Team.objects.get(id=sender_id)
     station = Station.objects.get(id=recipient_id)
     card = team.card
@@ -75,7 +75,7 @@ def get_transaction_result(sender, recipient, bet_amount):
     recipient_id = get_transaction_participant_id(recipient)
 
     if is_team(sender):
-        result = make_a_bet_at_the_station(sender_id, recipient_id, bet_amount)
+        result = make_bet_at_the_station(sender_id, recipient_id, bet_amount)
     else:
         result = get_money_from_station(sender_id, recipient_id, bet_amount)
 

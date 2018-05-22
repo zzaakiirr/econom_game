@@ -1,8 +1,6 @@
 from django.urls import reverse, resolve
 from django.test import TestCase, Client
 
-from rest_framework.views import status
-
 from .models import Station
 from .serializers import StationSerializer
 from .views import ListStationsView, create_station
@@ -20,7 +18,7 @@ class BaseViewTest(TestCase):
 
 class GetAllStationsTest(BaseViewTest):
     def test_get_all_stations_view_success_status_code(self):
-        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_get_all_stations_url_resolves_get_all_stations_view(self):
         view = resolve('/api/m=get_all_stations/')
@@ -42,7 +40,7 @@ class CreateStationTest(TestCase):
     response = client.get(url)
 
     def test_create_team_view_success_status_code(self):
-        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_create_station_url_resolves_create_station_view(self):
         view = resolve('/api/m=create_station/')

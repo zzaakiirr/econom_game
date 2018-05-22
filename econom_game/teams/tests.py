@@ -2,8 +2,6 @@ from django.urls import reverse, resolve
 from django.test import TestCase, Client
 import urllib
 
-from rest_framework.views import status
-
 from .models import Team, Card
 from .serializers import TeamSerializer
 from .views import ListTeamsView, create_team, create_card
@@ -20,7 +18,7 @@ class BaseViewTest(TestCase):
 
 class GetAllTeamsTest(BaseViewTest):
     def test_get_all_teams_view_success_status_code(self):
-        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_get_all_teams_url_resolves_get_all_team_view(self):
         view = resolve('/api/m=get_all_teams/')
@@ -44,7 +42,7 @@ class CreateTeamTest(TestCase):
     response = client.get(url)
 
     def test_create_team_view_success_status_code(self):
-        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_create_team_url_resolves_create_team_view(self):
         view = resolve('/api/m=create_team/')
@@ -63,7 +61,7 @@ class CreateCardTest(TestCase):
     response = client.get(url)
 
     def test_create_team_view_success_status_code(self):
-        self.assertEquals(self.response.status_code, status.HTTP_200_OK)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_create_card_url_resolves_create_card_view(self):
         view = resolve('/api/m=create_card/')
