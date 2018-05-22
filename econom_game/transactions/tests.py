@@ -19,11 +19,11 @@ class MakeTransasctionTests(TestCase):
 class MakeTransactionTestCase(TestCase):
     def setUp(self):
         self.card = Card.objects.create(id=999, cvv=999, money_amount=999)
-        self.team = Team.objects.create(
+        Team.objects.create(
             id=999, name="team_999",
             login="team_999", card=self.card
         )
-        self.station = Station.objects.create(
+        Station.objects.create(
             id=999, name="station_999",
             complexity=2, min_bet=100, max_bet=200
         )
@@ -58,32 +58,32 @@ class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
         expected_data = {"status": True}
         self.assertJSONEqual(response_content, expected_data)
 
-    # def test_make_bet_when_not_enogh_money_on_the_card_view_success_code(self):
-    #     self.card.money_amount = 0
-    #     response = self.client.get(self.url)
-    #     self.assertEquals(response.status_code, 200)
 
-    # def test_make_bet_when_not_enogh_money_on_the_card_return_correct_data(
-    #         self):
+class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
+    def setUp(self):
+        super().setUp()
+        empty_card = Card.objects.create(id=998, cvv=998, money_amount=0)
+        team = Team.objects.create(
+            id=998, name="team_998", login="team_998", card=empty_card
+        )
+        url = make_transaction_request_url(
+            sender="team_998",
+            recipient="station_999",
+            bet_amount=100
+        )
+        self.response = self.client.get(url)
 
-    #     # Need to FIX:
-    #     card = Card.objects.create(id=998, cvv=998, money_amount=0)
-    #     team = Team.objects.create(
-    #         id=998, name="team_998", login="team_998", card=card
-    #     )
-    #     url = (
-    #         "%s?sender=team_998&recipient=station_999&amount=100" %
-    #         reverse("make_transaction")
-    #     )
-    #     response = self.client.get(url)
-    #     ############################
+    def test_make_bet_when_not_enogh_money_on_the_card_view_success_code(self):
+        self.assertEquals(self.response.status_code, 200)
 
-    #     response_content = str(response.content, encoding='utf8')
-    #     expected_data = {
-    #         "status": False,
-    #         "reason": "Your card balance is less than station minimal bet"
-    #     }
-    #     self.assertJSONEqual(response_content, expected_data)
+    def test_make_bet_when_not_enogh_money_on_the_card_return_correct_data(
+            self):
+        response_content = str(self.response.content, encoding='utf8')
+        expected_data = {
+            "status": False,
+            "reason": "Your card balance is less than station minimal bet"
+        }
+        self.assertJSONEqual(response_content, expected_data)
 
 
 class MakeBetLessThanStationMinBetTests(MakeTransactionTestCase):
