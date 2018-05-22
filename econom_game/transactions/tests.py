@@ -10,6 +10,17 @@ from transactions.models import Transaction
 from transactions.views import make_transaction
 
 
+def make_transaction_request_url(sender, recipient, bet_amount):
+    url = (
+        "{reverse_url}?sender={sender}&recipient={recipient}".format(
+                reverse_url=reverse("make_transaction"),
+                sender=sender,
+                recipient=recipient
+            ) + "&amount=%s" % str(bet_amount)
+    )
+    return url
+
+
 class MakeTransasctionTests(TestCase):
     def test_make_transaction_url_resolves_make_transaction_view(self):
         view = resolve('/api/m=make_transaction/')
@@ -31,20 +42,22 @@ class MakeTransactionTestCase(TestCase):
 
 class MakeTransactionFromStationToTeamTests(MakeTransactionTestCase):
     def test_send_money_from_station_to_team_view_success_status_code(self):
-        url = (
-            "%s?sender=station_999&recipient=team_999&amount=100" %
-            reverse("make_transaction")
+        url = make_transaction_request_url(
+            sender="station_999",
+            recipient="recipient_999",
+            bet_amount=100
         )
         response = self.client.get(url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, 200)
 
 
 class MakeTransactionFromTeamToStationTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
-        self.url = (
-            "%s?sender=team_999&recipient=station_999&amount=100" %
-            reverse("make_transaction")
+        self.url = make_transaction_request_url(
+            sender="team_999",
+            recipient="recipient_999",
+            bet_amount=100
         )
         self.response = self.client.get(self.url)
         self.response_content = str(self.response.content, encoding='utf8')
@@ -86,17 +99,19 @@ class MakeTransactionFromTeamToStationTests(MakeTransactionTestCase):
 
     def test_make_a_bet_less_than_station_min_bet_view_success_status_code(
             self):
-        url = (
-            "%s?sender=team_999&recipient=station_999&amount=0" %
-            reverse("make_transaction")
+        url = make_transaction_request_url(
+            sender="team_999",
+            recipient="recipient_999",
+            bet_amount=0
         )
         response = self.client.get(url)
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, 200)
 
     def test_make_a_bet_less_than_station_min_bet_return_correct_data(self):
-        url = (
-            "%s?sender=team_999&recipient=station_999&amount=0" %
-            reverse("make_transaction")
+        url = make_transaction_request_url(
+            sender="team_999",
+            recipient="recipient_999",
+            bet_amount=0
         )
         response = self.client.get(url)
         response_content = str(response.content, encoding='utf8')
@@ -108,17 +123,19 @@ class MakeTransactionFromTeamToStationTests(MakeTransactionTestCase):
 
     def test_make_a_bet_higher_than_station_max_bet_view_success_status_code(
             self):
-        url = (
-            "%s?sender=team_999&recipient=station_999&amount=300" %
-            reverse("make_transaction")
+        url = make_transaction_request_url(
+            sender="team_999",
+            recipient="recipient_999",
+            bet_amount=300
         )
         response = self.client.get(url)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_make_a_bet_higher_than_station_max_bet_return_correct_data(self):
-        url = (
-            "%s?sender=team_999&recipient=station_999&amount=300" %
-            reverse("make_transaction")
+        url = make_transaction_request_url(
+            sender="team_999",
+            recipient="recipient_999",
+            bet_amount=300
         )
         response = self.client.get(url)
         response_content = str(response.content, encoding='utf8')
