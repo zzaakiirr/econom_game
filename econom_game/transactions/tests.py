@@ -27,17 +27,25 @@ class MakeTransactionTestCase(TestCase):
             id=999, name="station_999",
             complexity=2, min_bet=100, max_bet=200
         )
+        self.old_transactions_count = Transaction.objects.count()
 
 
 class MakeTransactionFromStationToTeamTests(MakeTransactionTestCase):
-    def test_send_money_from_station_to_team_view_success_status_code(self):
+    def setUp(self):
+        super().setUp()
         url = make_transaction_request_url(
             sender="station_999",
-            recipient="recipient_999",
+            recipient="team_999",
             bet_amount=100
         )
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.response = self.client.get(url)
+
+    def test_send_money_from_station_to_team_view_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_send_money_from_station_to_team_add_transaction_to_database(self):
+        new_transactions_count = Transaction.objects.count()
+        self.assertEqual(new_transactions_count, self.old_transactions_count+1)
 
 
 class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
@@ -58,6 +66,10 @@ class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
         expected_data = {"status": True}
         self.assertJSONEqual(response_content, expected_data)
 
+    def test_make_valid_bet_at_the_statin_add_transaction_to_database(self):
+        new_transactions_count = Transaction.objects.count()
+        self.assertEqual(new_transactions_count, self.old_transactions_count+1)
+
 
 class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
     def setUp(self):
@@ -71,6 +83,7 @@ class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
             recipient="station_999",
             bet_amount=100
         )
+        self.old_transactions_count = Transaction.objects.count()
         self.response = self.client.get(url)
 
     def test_make_bet_when_not_enogh_money_on_the_card_view_success_code(self):
@@ -84,6 +97,10 @@ class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
             "reason": "Your card balance is less than station minimal bet"
         }
         self.assertJSONEqual(response_content, expected_data)
+
+    def test_make_bet_when_no_money_do_not_add_transaction_to_database(self):
+        new_transactions_count = Transaction.objects.count()
+        self.assertEquals(new_transactions_count, self.old_transactions_count)
 
 
 class MakeBetLessThanStationMinBetTests(MakeTransactionTestCase):
@@ -107,6 +124,11 @@ class MakeBetLessThanStationMinBetTests(MakeTransactionTestCase):
         }
         self.assertJSONEqual(response_content, expected_data)
 
+    def test_make_bet_less_than_min_bet_do_not_add_transaction_to_database(
+            self):
+        new_transactions_count = Transaction.objects.count()
+        self.assertEquals(new_transactions_count, self.old_transactions_count)
+
 
 class MakeBetHigherThanStationMaxBetTests(MakeTransactionTestCase):
     def setUp(self):
@@ -129,3 +151,8 @@ class MakeBetHigherThanStationMaxBetTests(MakeTransactionTestCase):
             "reason": "Your bet is too big"
         }
         self.assertJSONEqual(response_content, expected_data)
+
+    def test_make_bet_higher_than_max_bet_do_not_add_transaction_to_database(
+            self):
+        new_transactions_count = Transaction.objects.count()
+        self.assertEquals(new_transactions_count, self.old_transactions_count)
