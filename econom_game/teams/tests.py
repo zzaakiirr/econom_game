@@ -42,6 +42,7 @@ class CreateTeamTest(SuperUserTestCase):
     def setUp(self):
         super().setUp()
         Card.objects.create(id=999, cvv=999, money_amount=999)
+        self.old_teams_count = Team.objects.count()
         url = (
             "%s?id=999&name=team_999&login=team_999&card_id=999" %
             reverse("create_team")
@@ -55,10 +56,15 @@ class CreateTeamTest(SuperUserTestCase):
         view = resolve('/api/m=create_team/')
         self.assertEquals(view.func, create_team)
 
+    def test_create_team_add_team_to_database(self):
+        new_teams_count = Team.objects.count()
+        self.assertEqual(new_teams_count, self.old_teams_count+1)
+
 
 class CreateCardTest(SuperUserTestCase):
     def setUp(self):
         super().setUp()
+        self.old_cards_count = Card.objects.count()
         url = (
             "%s?id=999&cvv=999&money_amount=999" %
             reverse("create_card")
@@ -71,3 +77,7 @@ class CreateCardTest(SuperUserTestCase):
     def test_create_card_url_resolves_create_card_view(self):
         view = resolve('/api/m=create_card/')
         self.assertEquals(view.func, create_card)
+
+    def test_create_card_add_card_to_database(self):
+        new_cards_count = Card.objects.count()
+        self.assertEqual(new_cards_count, self.old_cards_count+1)
