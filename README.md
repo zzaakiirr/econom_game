@@ -1,4 +1,4 @@
-Guest allowed api requests:
+# Guest allowed api requests:
 ```sh
 /api/m=get_all_teams
 /api/m=get_all_stations
