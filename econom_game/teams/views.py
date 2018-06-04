@@ -6,7 +6,7 @@ from rest_framework import generics
 
 from .models import Team, Card
 from .serializers import TeamSerializer
-from teams import teams_views_helpers
+import views_helpers
 
 
 class ListTeamsView(generics.ListAPIView):
@@ -26,7 +26,7 @@ def create_team(request):
         id=id, name=name, login=login, card=team_card)
     new_team = Team.objects.get(id=id)
 
-    if teams_views_helpers.is_in_database(new_team):
+    if views_helpers.is_in_database(new_team, Team):
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
 
@@ -40,6 +40,6 @@ def create_card(request):
     Card.objects.create(id=id, cvv=cvv, money_amount=money_amount)
     new_card = Card.objects.get(id=id)
 
-    if teams_views_helpers.is_in_database(new_card):
+    if views_helpers.is_in_database(new_card, Card):
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
