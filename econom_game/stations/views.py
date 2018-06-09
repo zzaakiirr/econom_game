@@ -8,7 +8,6 @@ from rest_framework.response import Response
 
 from .models import Station
 from .serializers import StationSerializer
-import views_helpers
 
 
 class ListStationsView(generics.ListAPIView):
@@ -24,12 +23,11 @@ def create_station(request):
     min_bet = request.GET['min_bet']
     max_bet = request.GET['max_bet']
 
-    Station.objects.create(
+    new_station = Station.objects.create(
         id=id, name=name,
         complexity=complexity, min_bet=min_bet, max_bet=max_bet
     )
-    new_station = Station.objects.get(id=id)
 
-    if views_helpers.is_in_database(new_station, Station):
+    if new_station._state.db:
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
