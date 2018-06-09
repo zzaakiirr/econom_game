@@ -35,12 +35,12 @@ class GetAllStationsTest(BaseViewTest):
 class CreateStationTest(SuperUserTestCase):
     def setUp(self):
         super().setUp()
-        self.old_stations_count = Station.objects.count()
         url = (
             "%s?id=999&name=station_999&complexity=2&min_bet=0&max_bet=999" %
             reverse("create_station")
         )
         self.response = self.client.get(url)
+        self.station = Station.objects.get(id=999)
 
     def test_create_station_view_success_status_code(self):
         self.assertEquals(self.response.status_code, 200)
@@ -50,5 +50,13 @@ class CreateStationTest(SuperUserTestCase):
         self.assertEquals(view.func, create_station)
 
     def test_create_station_add_station_to_database(self):
-        new_stations_count = Station.objects.count()
-        self.assertEqual(new_stations_count, self.old_stations_count+1)
+        self.assertTrue(self.station._state.db)
+
+    def test_create_station_return_correct_data(self):
+        if self.station._state.db:
+            expected_data = {"status": True}
+        else:
+            expected_data = {"status": False}
+
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
