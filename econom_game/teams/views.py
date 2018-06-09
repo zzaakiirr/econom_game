@@ -6,7 +6,6 @@ from rest_framework import generics
 
 from .models import Team, Card
 from .serializers import TeamSerializer
-import views_helpers
 
 
 class ListTeamsView(generics.ListAPIView):
