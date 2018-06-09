@@ -21,12 +21,10 @@ def create_team(request):
     card_id = request.GET['card_id']
     team_card = Card.objects.get(id=card_id)
 
-    old_teams_count = Team.objects.count()
     new_team = Team.objects.create(
         id=id, name=name, login=login, card=team_card)
-    new_team.save()
-    new_teams_count = Team.objects.count()
-    if new_teams_count == old_teams_count + 1:
+
+    if new_team._state.db:
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
 
@@ -37,10 +35,8 @@ def create_card(request):
     cvv = request.GET['cvv']
     money_amount = request.GET['money_amount']
 
-    old_cards_count = Card.objects.count()
     new_card = Card.objects.create(id=id, cvv=cvv, money_amount=money_amount)
-    new_card.save()
-    new_cards_count = Card.objects.count()
-    if new_cards_count == old_cards_count + 1:
+
+    if new_card._state.db:
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})

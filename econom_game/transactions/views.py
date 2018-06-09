@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from transactions import transactions_views_helpers
+from transactions.views_helpers import get_transaction_result
 
 
 def make_transaction(request):
@@ -9,7 +9,5 @@ def make_transaction(request):
     recipient = request.GET['recipient']
     amount = int(request.GET['amount'])
 
-    transaction_result = transactions_views_helpers.get_transaction_result(
-        sender, recipient, amount
-    )
+    transaction_result = get_transaction_result(sender, recipient, amount)
     return JsonResponse(transaction_result)

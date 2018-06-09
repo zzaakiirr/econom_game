@@ -23,13 +23,11 @@ def create_station(request):
     min_bet = request.GET['min_bet']
     max_bet = request.GET['max_bet']
 
-    old_stations_count = Station.objects.count()
     new_station = Station.objects.create(
         id=id, name=name,
         complexity=complexity, min_bet=min_bet, max_bet=max_bet
     )
-    new_station.save()
-    new_stations_count = Station.objects.count()
-    if new_stations_count == old_stations_count + 1:
+
+    if new_station._state.db:
         return JsonResponse({"status": True})
     return JsonResponse({"status": False})
