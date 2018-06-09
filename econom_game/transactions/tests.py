@@ -7,7 +7,7 @@ from transactions.models import Transaction
 
 from transactions.views import make_transaction
 
-from transactions.transactions_test_helpers import make_transaction_request_url
+from transactions.test_helpers import make_transaction_request_url
 
 
 class MakeTransasctionTests(TestCase):
