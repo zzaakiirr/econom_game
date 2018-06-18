@@ -17,9 +17,7 @@ def is_team(transaction_participant):
 
 
 def is_valid_bet(bet_amount, station):
-    if station.min_bet <= bet_amount <= station.max_bet:
-        return True
-    return False
+    return station.min_bet <= bet_amount <= station.max_bet
 
 
 def is_enough_money_on_the_card(station, card):
