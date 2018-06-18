@@ -12,7 +12,7 @@ from transactions.test_helpers import make_transaction_request_url
 
 class MakeTransasctionTests(TestCase):
     def test_make_transaction_url_resolves_make_transaction_view(self):
-        view = resolve('/api/m=make_transaction/')
+        view = resolve('/api/v1/make_transaction/')
         self.assertEquals(view.func, make_transaction)
 
 

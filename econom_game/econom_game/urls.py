@@ -24,32 +24,32 @@ from transactions import views as transactions_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(
-        r'^api/m=get_all_teams/$',
+        r'^api/v1/get_all_teams/$',
         teams_views.ListTeamsView.as_view(),
         name='all_teams'
     ),
     url(
-        r'^api/m=get_all_stations/$',
+        r'^api/v1/get_all_stations/$',
         stations_views.ListStationsView.as_view(),
         name='all_stations'
     ),
     url(
-        r'^api/m=create_station/$',
+        r'^api/v1/create_station/$',
         stations_views.create_station,
         name='create_station'
     ),
     url(
-        r'^api/m=create_team/$',
+        r'^api/v1/create_team/$',
         teams_views.create_team,
         name='create_team'
     ),
     url(
-        r'^api/m=create_card/$',
+        r'^api/v1/create_card/$',
         teams_views.create_card,
         name='create_card'
     ),
     url(
-        r'^api/m=make_transaction/$',
+        r'^api/v1/make_transaction/$',
         transactions_views.make_transaction,
         name='make_transaction'
     )

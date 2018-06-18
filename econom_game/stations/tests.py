@@ -23,7 +23,7 @@ class GetAllStationsTest(BaseViewTest):
         self.assertEquals(self.response.status_code, 200)
 
     def test_get_all_stations_url_resolves_get_all_stations_view(self):
-        view = resolve('/api/m=get_all_stations/')
+        view = resolve('/api/v1/get_all_stations/')
         self.assertEquals(view.func.view_class, ListStationsView)
 
     def test_get_all_stations_return_correct_data(self):
@@ -46,7 +46,7 @@ class CreateStationTest(SuperUserTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_create_station_url_resolves_create_station_view(self):
-        view = resolve('/api/m=create_station/')
+        view = resolve('/api/v1/create_station/')
         self.assertEquals(view.func, create_station)
 
     def test_create_station_add_station_to_database(self):

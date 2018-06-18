@@ -19,7 +19,7 @@ class GetAllTeamsTest(TestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_get_all_teams_url_resolves_get_all_team_view(self):
-        view = resolve('/api/m=get_all_teams/')
+        view = resolve('/api/v1/get_all_teams/')
         self.assertEquals(view.func.view_class, ListTeamsView)
 
     def test_get_all_stations_return_correct_data(self):
@@ -53,7 +53,7 @@ class CreateTeamTest(SuperUserTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_create_team_url_resolves_create_team_view(self):
-        view = resolve('/api/m=create_team/')
+        view = resolve('/api/v1/create_team/')
         self.assertEquals(view.func, create_team)
 
     def test_create_team_add_team_to_database(self):
@@ -83,7 +83,7 @@ class CreateCardTest(SuperUserTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_create_card_url_resolves_create_card_view(self):
-        view = resolve('/api/m=create_card/')
+        view = resolve('/api/v1/create_card/')
         self.assertEquals(view.func, create_card)
 
     def test_create_card_add_card_to_database(self):
