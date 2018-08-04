@@ -1,3 +1,8 @@
+# Login page:
+```sh
+/login
+```
+
 # Guest allowed api requests:
 ```sh
 /api/v1/get_all_teams
