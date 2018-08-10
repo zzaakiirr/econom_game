@@ -8,9 +8,10 @@ from django.contrib.auth import authenticate, login
 @csrf_exempt
 def login_user(request):
     if request.method == 'POST':
-        data = json.loads(request.body.decode("utf-8"))
-        username = data[username]
-        password = data[password]
+        data = request.body.decode('utf-8')
+        received_json_data = json.loads(data)
+        username = received_json_data[username]
+        password = received_json_data[password]
         user = authenticate(username=username, password=password)
         if user is not None:
             if login(request, user):
