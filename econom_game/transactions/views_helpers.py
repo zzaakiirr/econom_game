@@ -3,26 +3,30 @@ from teams.models import Team
 from transactions.models import Transaction
 
 
+def get_transaction_result(sender, recipient, bet_amount):
+    sender_id = get_transaction_participant_id(sender)
+    recipient_id = get_transaction_participant_id(recipient)
+
+    if is_team(sender):
+        result = make_bet_at_the_station(sender_id, recipient_id, bet_amount)
+    else:
+        result = get_money_from_station(sender_id, recipient_id, bet_amount)
+
+    if result['status']:
+        add_transaction_to_database(sender, recipient, bet_amount)
+
+    return result
+
+
 def get_transaction_participant_id(transaction_participant):
-    slash_symbol_index = transaction_participant.find('_')
-    first_digit_of_id = slash_symbol_index + 1
+    underline_symbol_index = transaction_participant.find('_')
+    first_digit_of_id = underline_symbol_index + 1
     transaction_participant_id = transaction_participant[first_digit_of_id:]
     return int(transaction_participant_id)
 
 
 def is_team(transaction_participant):
-    if 'team' in transaction_participant:
-        return True
-    return False
-
-
-def is_valid_bet(bet_amount, station):
-    return station.min_bet <= bet_amount <= station.max_bet
-
-
-def is_enough_money_on_the_card(station, card):
-    if card.money_amount >= station.min_bet:
-        return True
+    return 'team' in transaction_participant
 
 
 def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
@@ -42,18 +46,26 @@ def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
         card.save()
         result = {"status": True}
 
-    if bet_amount < station.min_bet:
+    elif bet_amount < station.min_bet:
         result = {
             "status": False,
             "reason": "Station minimal bet is higher"
         }
-    if bet_amount > station.max_bet:
+    elif bet_amount > station.max_bet:
         result = {
             "status": False,
             "reason": "Your bet is too big"
         }
 
     return result
+
+
+def is_valid_bet(bet_amount, station):
+    return station.min_bet <= bet_amount <= station.max_bet
+
+
+def is_enough_money_on_the_card(station, card):
+    return card.money_amount >= station.min_bet
 
 
 def get_money_from_station(sender_id, recipient_id, bet_amount):
@@ -64,21 +76,6 @@ def get_money_from_station(sender_id, recipient_id, bet_amount):
     card.money_amount += bet_amount * station.complexity
     card.save()
     result = {"status": True}
-
-    return result
-
-
-def get_transaction_result(sender, recipient, bet_amount):
-    sender_id = get_transaction_participant_id(sender)
-    recipient_id = get_transaction_participant_id(recipient)
-
-    if is_team(sender):
-        result = make_bet_at_the_station(sender_id, recipient_id, bet_amount)
-    else:
-        result = get_money_from_station(sender_id, recipient_id, bet_amount)
-
-    if result['status']:
-        add_transaction_to_database(sender, recipient, bet_amount)
 
     return result
 
