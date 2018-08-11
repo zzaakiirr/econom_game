@@ -1,19 +1,11 @@
+import json
 from django.test import TestCase
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.urls import resolve
 
-from .forms import LoginForm
 from .views import login_user
-
-
-class LoginFormTests(TestCase):
-    def test_form_has_fields(self):
-        form = LoginForm()
-        excepted = ['username', 'password']
-        actual = list(form.fields)
-        self.assertSequenceEqual(excepted, actual)
 
 
 class LoginTests(TestCase):
@@ -28,19 +20,17 @@ class LoginTests(TestCase):
         view = resolve('/login/')
         self.assertEquals(view.func, login_user)
 
-    def test_contains_form(self):
-        form = self.response.context.get('form')
-        self.assertIsInstance(form, LoginForm)
-
 
 class SuccessfulLoginTests(TestCase):
     def setUp(self):
         User.objects.create_user(username='test', password='test')
         url = reverse('login')
         data = {'username': 'test', 'password': 'test'}
-        self.response = self.client.post(url, data)
+        self.response = self.client.post(
+            url, json.dumps(data), content_type="application/json"
+        )
 
-    def test_invalid_login_status_code(self):
+    def test_valid_login_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
     def test_user_is_authenticated(self):
@@ -56,8 +46,9 @@ class SuccessfulLoginTests(TestCase):
 class InvalidLoginTests(TestCase):
     def setUp(self):
         url = reverse('login')
+        data = {'username': 'does_not_exist', 'password': 'does_not_exist'}
         self.response = self.client.post(
-            url, {'username': 'does_not_exist', 'password': 'does_not_exist'}
+            url, json.dumps(data), content_type="application/json"
         )
 
     def test_invalid_login_status_code(self):
