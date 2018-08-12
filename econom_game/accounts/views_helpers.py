@@ -16,10 +16,11 @@ def get_user_allowed_urls(request):
         4. Add to list if success
 
     """
+    permission_codenames = []
+
     for group in request.user.groups.all():
-        permission_codenames = [
-            permission.codename for permission in group.permissions.all()
-        ]
+        for permission in group.permissions.all():
+            permission_codenames.append(permission.codename)
 
     user_allowed_urls = []
 
