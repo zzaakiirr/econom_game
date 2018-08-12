@@ -13,6 +13,6 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return JsonResponse({"status": "success"})
+            return JsonResponse({"success": True})
 
-    return JsonResponse({"status": "failure"})
+    return JsonResponse({"success": False})
