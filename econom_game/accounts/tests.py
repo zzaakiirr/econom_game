@@ -38,7 +38,7 @@ class SuccessfulLoginTests(TestCase):
         assert user.is_authenticated()
 
     def test_successful_login_return_correct_data(self):
-        expected_data = {"status": "success"}
+        expected_data = {"success": True}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
@@ -59,6 +59,6 @@ class InvalidLoginTests(TestCase):
         assert not user.is_authenticated()
 
     def test_invalid_login_return_correct_data(self):
-        expected_data = {"status": "failure"}
+        expected_data = {"success": False}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
