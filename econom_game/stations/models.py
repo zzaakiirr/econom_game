@@ -18,10 +18,5 @@ class Station(models.Model):
     min_bet = models.PositiveIntegerField()
     max_bet = models.PositiveIntegerField()
 
-    class Meta:
-        permissions = (
-            ('station', 'Can view "/station" page'),
-        )
-
     def __str__(self):
         return self.name

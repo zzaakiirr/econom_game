@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+
+class Group(models.Model):
+    class Meta:
+        permissions = (
+            ("view_station", 'Can view "/station" page'),
+        )
