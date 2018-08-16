@@ -7,28 +7,18 @@ from django.contrib.auth.models import User, Group, Permission
 from django.urls import resolve
 import json
 
-from .views import get_menu
+from ..views import get_menu
 
 
-class LoggedUserHasPermissionToOnePageGetMenuTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = User.objects.create(username='test', password='test')
-        cls.station_admins = Group.objects.create(name="station_admins")
-
-        content_type = ContentType.objects.get(
-            app_label='accounts', model='group')
-        cls.can_view_station = Permission.objects.create(
-            codename='view_station',
-            name='Can view "/station" page',
-            content_type=content_type
-        )
-
+class LoggedUserHasPermissionToPageGetMenuTests(TestCase):
     def setUp(self):
-        self.client.force_login(self.user)
+        can_view_station = Permission.objects.get(codename='view_station')
+        station_admins = Group.objects.create(name="station_admins")
+        station_admins.permissions.add(can_view_station)
 
-        self.station_admins.permissions.add(self.can_view_station)
-        self.user.groups.add(self.station_admins)
+        user = User.objects.create(username='test', password='test')
+        user.groups.add(station_admins)
+        self.client.force_login(user)
 
         url = reverse('get_menu')
         self.response = self.client.get(url)
@@ -37,10 +27,10 @@ class LoggedUserHasPermissionToOnePageGetMenuTests(TestCase):
         view = resolve('/api/v1/get_menu/')
         self.assertEquals(view.func, get_menu)
 
-    def test_logged_user_get_menu_status_code(self):
+    def test_logged_user_has_permission_to_page_get_menu_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
-    def test_logged_user_get_menu_return_correct_data(self):
+    def test_logged_user_has_perm_to_page_get_menu_return_correct_data(self):
         expected_data = {"success": True, "user_allowed_urls": ['/station/']}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)

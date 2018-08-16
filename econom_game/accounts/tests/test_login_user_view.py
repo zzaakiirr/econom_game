@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.urls import resolve
 
-from .views import login_user
+from ..views import login_user
 
 
 class LoginTests(TestCase):
