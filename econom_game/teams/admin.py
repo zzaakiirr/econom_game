@@ -1,5 +1,5 @@
 from django.contrib import admin
-from teams.models import Team, Card
+from .models import Team, Card
 
 
 admin.site.register(Team)
