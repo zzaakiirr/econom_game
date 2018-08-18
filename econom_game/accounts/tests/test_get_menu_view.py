@@ -10,6 +10,12 @@ import json
 from ..views import get_menu
 
 
+class GetMenuTests(TestCase):
+    def test_get_menu_url_resolves_get_menu_view(self):
+        view = resolve('/api/v1/get_menu/')
+        self.assertEquals(view.func, get_menu)
+
+
 class NotLoggedGetMenuTestCase(TestCase):
     def setUp(self):
         self.url = reverse('get_menu')
@@ -51,9 +57,6 @@ class LoggedUserHasPermissionToOnePageGetMenuTests(LoggedGetMenuTestCase):
 
         self.response = self.client.get(self.url)
 
-    def test_get_menu_url_resolves_get_menu_view(self):
-        view = resolve('/api/v1/get_menu/')
-        self.assertEquals(view.func, get_menu)
 
     def test_logged_user_get_menu_status_code(self):
         self.assertEquals(self.response.status_code, 200)
