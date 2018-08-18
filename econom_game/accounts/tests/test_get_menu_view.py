@@ -59,7 +59,7 @@ class LoggedUserHasPermissionToOnePageGetMenuTests(LoggedGetMenuTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_logged_user_get_menu_return_correct_data(self):
-        expected_data = {"success": True, "user_allowed_urls": ['/station/']}
+        expected_data = {"success": True, "user_allowed_urls": ['/admin/station/']}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
