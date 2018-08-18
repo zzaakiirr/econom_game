@@ -21,6 +21,13 @@ def login_user(request):
     return JsonResponse({"success": False})
 
 
+def is_logged_in(request):
+    username = request.user.username
+    if not username:
+        username = None
+    return JsonResponse({'username': username})
+
+
 @login_required
 def get_menu(request):
     user_allowed_urls = get_user_allowed_urls(request)
