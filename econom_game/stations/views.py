@@ -1,12 +1,12 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.contrib.auth.decorators import user_passes_test
 
 from rest_framework import generics
-from rest_framework.views import status
-from rest_framework.response import Response
 
 from .models import Station
 from .serializers import StationSerializer
+
+from .views_helpers import fetch_response
 
 
 class ListStationsView(generics.ListAPIView):
@@ -14,19 +14,24 @@ class ListStationsView(generics.ListAPIView):
     serializer_class = StationSerializer
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@csrf_exempt
 def create_station(request):
-    id = request.GET['id']
-    name = request.GET['name']
-    complexity = request.GET['complexity']
-    min_bet = request.GET['min_bet']
-    max_bet = request.GET['max_bet']
+    # if not request.user.is_superuser:
+    #     return JsonResponse({'success': False, 'error': 'Permission denied'})
 
-    new_station = Station.objects.create(
-        id=id, name=name,
-        complexity=complexity, min_bet=min_bet, max_bet=max_bet
-    )
+    if request.method == 'GET':
+        return JsonResponse(
+            {'success': False, 'error': 'This is not POST request'}
+        )
 
-    if new_station._state.db:
-        return JsonResponse({"status": True})
-    return JsonResponse({"status": False})
+    response = fetch_response(request)
+    if not response['success']:
+        return JsonResponse(response)
+    # new_station = Station.objects.create(
+    #     id=id, name=name,
+    #     complexity=complexity, min_bet=min_bet, max_bet=max_bet
+    # )
+
+    # if new_station._state.db:
+    #     return JsonResponse({"status": True})
+    return JsonResponse({"status": True})
