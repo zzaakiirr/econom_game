@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import json
@@ -19,6 +19,11 @@ def login_user(request):
             return JsonResponse({"success": True})
 
     return JsonResponse({"success": False})
+
+
+def logout_user(request):
+    logout(request)
+    return JsonResponse({'success': True})
 
 
 def is_logged_in(request):
