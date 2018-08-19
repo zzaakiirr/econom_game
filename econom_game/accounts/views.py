@@ -27,14 +27,11 @@ def logout_user(request):
 
 
 def is_logged_in(request):
-    username = request.user.username
-    if not username:
-        username = None
-    return JsonResponse({'username': username})
+    if request.user.is_authenticated():
+        return JsonResponse({'is_logged_in': True})
+    return JsonResponse({'is_logged_in': False})
 
 
 def get_menu(request):
     user_allowed_urls = get_user_allowed_urls(request)
-    return JsonResponse(
-        {"user_allowed_urls": user_allowed_urls}
-    )
+    return JsonResponse({"user_allowed_urls": user_allowed_urls})
