@@ -1,12 +1,12 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.contrib.auth.decorators import user_passes_test
 
 from rest_framework import generics
-from rest_framework.views import status
-from rest_framework.response import Response
 
 from .models import Station
 from .serializers import StationSerializer
+
+from . import views_helpers
 
 
 class ListStationsView(generics.ListAPIView):
@@ -14,19 +14,31 @@ class ListStationsView(generics.ListAPIView):
     serializer_class = StationSerializer
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@csrf_exempt
 def create_station(request):
-    id = request.GET['id']
-    name = request.GET['name']
-    complexity = request.GET['complexity']
-    min_bet = request.GET['min_bet']
-    max_bet = request.GET['max_bet']
+    # if not request.user.is_superuser:
+    #     return JsonResponse({'success': False, 'error': 'Permission denied'})
 
-    new_station = Station.objects.create(
-        id=id, name=name,
-        complexity=complexity, min_bet=min_bet, max_bet=max_bet
-    )
+    if request.method == 'GET':
+        return JsonResponse(
+            {'success': False, 'error': 'This is not POST request'}
+        )
 
-    if new_station._state.db:
-        return JsonResponse({"status": True})
-    return JsonResponse({"status": False})
+    received_data = views_helpers.get_received_data(request)
+    if not received_data.get('success'):
+        return JsonResponse(received_data)
+
+    new_station = views_helpers.create_new_station(received_data)
+    if not new_station._state.db:
+        return JsonResponse({
+            "status": False, "error": "Station does not in database"
+        })
+
+    new_station_admin = views_helpers.create_new_station_admin(
+        received_data, new_station)
+    if not new_station_admin._state.db:
+        return JsonResponse({
+            "status": False, "error": "Station does not in database"
+        })
+
+    return JsonResponse({"status": True})
