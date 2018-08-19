@@ -16,13 +16,16 @@ def get_user_allowed_urls(request):
         4. Add to list if success
 
     """
+    user_allowed_urls = []
+
+    if not request.user.is_authenticated():
+        return user_allowed_urls
+
     permission_codenames = []
 
     permissions = Permission.objects.filter(user=request.user)
     for permission in permissions:
         permission_codenames.append(permission.codename)
-
-    user_allowed_urls = []
 
     for permission_codename in permission_codenames:
         try:
