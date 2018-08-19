@@ -1,26 +1,26 @@
 from django.core.urlresolvers import reverse
 from django.urls.exceptions import NoReverseMatch
+from django.contrib.auth.models import Permission
 
 
 def get_user_allowed_urls(request):
     """User allowed urls getting
 
     The "KEY":
-        User's groups permission codenames equals to urls 'name' parameters
+        User's permission codenames equals to urls 'name' parameters
         in project urls configuration file.
 
     How is function work:
-        1. Get user groups
-        2. Get groups permissions
+        1. Get user permissions
         3. Try to reverse permissions codenames
         4. Add to list if success
 
     """
     permission_codenames = []
 
-    for group in request.user.groups.all():
-        for permission in group.permissions.all():
-            permission_codenames.append(permission.codename)
+    permissions = Permission.objects.filter(user=request.user)
+    for permission in permissions:
+        permission_codenames.append(permission.codename)
 
     user_allowed_urls = []
 
