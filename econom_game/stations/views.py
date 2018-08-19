@@ -6,7 +6,7 @@ from rest_framework import generics
 from .models import Station
 from .serializers import StationSerializer
 
-from .views_helpers import fetch_response
+from . import views_helpers
 
 
 class ListStationsView(generics.ListAPIView):
@@ -24,14 +24,21 @@ def create_station(request):
             {'success': False, 'error': 'This is not POST request'}
         )
 
-    response = fetch_response(request)
-    if not response['success']:
-        return JsonResponse(response)
-    # new_station = Station.objects.create(
-    #     id=id, name=name,
-    #     complexity=complexity, min_bet=min_bet, max_bet=max_bet
-    # )
+    received_data = views_helpers.get_received_data(request)
+    if not received_data.get('success'):
+        return JsonResponse(received_data)
 
-    # if new_station._state.db:
-    #     return JsonResponse({"status": True})
+    new_station = views_helpers.create_new_station(received_data)
+    if not new_station._state.db:
+        return JsonResponse({
+            "status": False, "error": "Station does not in database"
+        })
+
+    new_station_admin = views_helpers.create_new_station_admin(
+        received_data, new_station)
+    if not new_station_admin._state.db:
+        return JsonResponse({
+            "status": False, "error": "Station does not in database"
+        })
+
     return JsonResponse({"status": True})

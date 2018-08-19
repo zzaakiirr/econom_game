@@ -2,6 +2,7 @@ from django.http import JsonResponse
 import json
 
 from .models import Station
+from accounts.models import User, StationAdmin
 
 
 def get_not_recieved_fields(expected_fields, data):
@@ -75,7 +76,14 @@ def get_is_not_max_bet_greater_min_bet():
     }
 
 
-def fetch_response(request):
+def is_not_email_in_use(email):
+    for user in User.objects.all():
+        if user.email == email:
+            return False
+    return True
+
+
+def get_received_data(request):
     response = {"success": False}
     data = json.loads(request.body.decode("utf-8"))
 
@@ -106,4 +114,30 @@ def fetch_response(request):
         response["error"] = "max_bet less than min_bet"
         return response
 
-    return {"success": True}
+    if not is_not_email_in_use(email):
+        response['error'] = "This email already in use"
+        return response
+
+    data['success'] = True
+    return data
+
+
+def create_new_station(data):
+    new_station_id = Station.objects.count()+1
+    new_station = Station.objects.create(
+        id=new_station_id, name=data.get('name'), owner=data.get('owner'),
+        complexity=data.get('complexity'), min_bet=data.get('min_bet'),
+        max_bet=data.get('max_bet'),
+    )
+    return new_station
+
+
+def create_new_station_admin(data, new_station):
+    random_password = User.objects.make_random_password()
+    user = User.objects.create_user(
+        email=data.get('email'), password=random_password,
+        first_name=data.get('name')
+    )
+    new_station_admin = StationAdmin.objects.create(
+        station=new_station, user=user)
+    return new_station_admin

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
+from stations.models import Station
+
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -45,6 +47,14 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+
+class StationAdmin(models.Model):
+    station = models.ForeignKey(Station, related_name='station', default=None)
+    user = models.OneToOneField(User)
+
+    def __str__(self):
+        return '%s admin' % self.station.name
 
 
 class Group(models.Model):
