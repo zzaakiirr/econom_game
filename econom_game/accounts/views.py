@@ -28,9 +28,8 @@ def is_logged_in(request):
     return JsonResponse({'username': username})
 
 
-@login_required
 def get_menu(request):
     user_allowed_urls = get_user_allowed_urls(request)
     return JsonResponse(
-        {"success": True, "user_allowed_urls": user_allowed_urls}
+        {"user_allowed_urls": user_allowed_urls}
     )

@@ -34,7 +34,7 @@ class NotLoggedUserGetMenuTests(NotLoggedGetMenuTestCase):
         self.response = self.client.get(self.url)
 
     def test_not_logged_user_get_menu_status_code(self):
-        self.assertEquals(self.response.status_code, 302)
+        self.assertEquals(self.response.status_code, 200)
 
 
 class LoggedUserHasPermissionToOnePageGetMenuTests(LoggedGetMenuTestCase):
@@ -57,14 +57,11 @@ class LoggedUserHasPermissionToOnePageGetMenuTests(LoggedGetMenuTestCase):
 
         self.response = self.client.get(self.url)
 
-
     def test_logged_user_get_menu_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
     def test_logged_user_get_menu_return_correct_data(self):
-        expected_data = {
-            "success": True, "user_allowed_urls": ['/admin/station/']
-        }
+        expected_data = {"user_allowed_urls": ['/admin/station/']}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
@@ -78,6 +75,6 @@ class LoggedUserHasNotPermissionToPageGetMenuTests(LoggedGetMenuTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_user_has_no_permission_to_page_get_menu_return_correct_data(self):
-        expected_data = {"success": True, "user_allowed_urls": []}
+        expected_data = {"user_allowed_urls": []}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
