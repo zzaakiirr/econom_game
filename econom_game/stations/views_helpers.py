@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Permission
 from django.http import JsonResponse
 import json
 
@@ -38,7 +40,7 @@ def get_has_not_received_expected_fields_response(not_received_fields):
 
 def is_unique_station_name(station_name):
     for station in Station.objects.all():
-        if station_name in station.name:
+        if station_name == station.name:
             return False
     return True
 
@@ -141,3 +143,11 @@ def create_new_station_admin(data, new_station):
     new_station_admin = StationAdmin.objects.create(
         station=new_station, user=user)
     return new_station_admin
+
+
+def add_user_model_permissions_to_user(user, user_model):
+    user_model_content_type = ContentType.objects.get_for_model(user_model)
+    user_model_permissions = Permission.objects.filter(
+        content_type=user_model_content_type)
+    for user_model_permission in user_model_permissions:
+        user.user_permissions.add(user_model_permission)

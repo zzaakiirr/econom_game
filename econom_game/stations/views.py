@@ -5,6 +5,7 @@ from rest_framework import generics
 
 from .models import Station
 from .serializers import StationSerializer
+from accounts.models import StationAdmin
 
 from . import views_helpers
 
@@ -16,8 +17,8 @@ class ListStationsView(generics.ListAPIView):
 
 @csrf_exempt
 def create_station(request):
-    if not request.user.is_superuser:
-        return JsonResponse({'success': False, 'error': 'Permission denied'})
+    # if not request.user.is_superuser:
+    #     return JsonResponse({'success': False, 'error': 'Permission denied'})
 
     if request.method == 'GET':
         return JsonResponse(
@@ -40,5 +41,8 @@ def create_station(request):
         return JsonResponse({
             "status": False, "error": "Station does not in database"
         })
+
+    views_helpers.add_user_model_permissions_to_user(
+        user=new_station_admin.user, user_model=StationAdmin)
 
     return JsonResponse({"status": True})
