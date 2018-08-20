@@ -17,8 +17,8 @@ class ListStationsView(generics.ListAPIView):
 
 @csrf_exempt
 def create_station(request):
-    # if not request.user.is_superuser:
-    #     return JsonResponse({'success': False, 'error': 'Permission denied'})
+    if not request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'Permission denied'})
 
     if request.method == 'GET':
         return JsonResponse(

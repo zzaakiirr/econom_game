@@ -6,6 +6,8 @@ import json
 from .models import Station
 from accounts.models import User, StationAdmin
 
+from . import accounts_database_helpers
+
 
 def get_not_recieved_fields(expected_fields, data):
     not_received_fields = []
@@ -135,13 +137,17 @@ def create_new_station(data):
 
 
 def create_new_station_admin(data, new_station):
-    random_password = User.objects.make_random_password()
+    password = User.objects.make_random_password()
+    email = data.get('email')
+
     user = User.objects.create_user(
-        email=data.get('email'), password=random_password,
+        email=email, password=password,
         first_name=data.get('name')
     )
     new_station_admin = StationAdmin.objects.create(
         station=new_station, user=user)
+    accounts_database_helpers.load_account_to_db(email, password)
+
     return new_station_admin
 
 
