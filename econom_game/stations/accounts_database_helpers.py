@@ -2,13 +2,16 @@ import json
 
 
 def load_json_data_from_json_package(file_name):
-    with open(file_name, 'r') as f_obj:
-        database = json.load(f_obj)
+    try:
+        with open(file_name) as f_obj:
+            database = json.load(f_obj)
+    except FileNotFoundError:
+        database = {}
     return database
 
 
 def load_json_data_to_json_package(file_name, data):
-    with open(filename, 'w') as f_obj:
+    with open(file_name, 'w') as f_obj:
         json.dump(data, f_obj)
 
 
