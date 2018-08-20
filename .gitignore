@@ -9,3 +9,6 @@ db.sqlite3
 ### Virtual environment ###
 venv/
 
+### Accounts database ###
+/econom_game/accounts.json
+
