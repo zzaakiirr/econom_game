@@ -1,11 +1,11 @@
 from django.urls import reverse, resolve
-from django.contrib.auth.models import User
 from django.test import TestCase
 import urllib
 
 from .models import Team, Card
 from .serializers import TeamSerializer
 from .views import ListTeamsView, create_team, create_card
+from accounts.models import User
 
 
 class GetAllTeamsTest(TestCase):
@@ -31,9 +31,8 @@ class GetAllTeamsTest(TestCase):
 class SuperUserTestCase(TestCase):
     def setUp(self):
         user = User.objects.create_superuser(
-            username='test',
+            email='test',
             password='test',
-            email='test'
         )
         self.client.force_login(user)
 
