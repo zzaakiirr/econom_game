@@ -48,6 +48,11 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    class Meta:
+        permissions = (
+            ("add_station", "Can view '/admin/add_station/' page"),
+        )
+
 
 class StationAdmin(models.Model):
     station = models.ForeignKey(Station, related_name='station', default=None)
