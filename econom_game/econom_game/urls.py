@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'', include('transactions.urls')),
 
     url(r"^admin/station/$", empty_view, name='view_station'),
+    url(r"^admin/add_station/$", empty_view, name='add_station'),
+
 ]
