@@ -4,8 +4,10 @@ from django.core.urlresolvers import reverse
 from django.urls import resolve
 import json
 
-from ..views import get_menu
 from accounts.models import User, StationAdmin
+
+from ..views import get_menu
+
 from stations.views_helpers import add_user_model_permissions_to_user
 
 
