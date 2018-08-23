@@ -1,9 +1,6 @@
-from django.contrib.auth import login
 from django.test import TestCase
-from django.contrib import auth
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from django.urls import resolve
 import json
 
@@ -34,7 +31,7 @@ class NotLoggedUserGetMenuTests(TestCase):
 
 class LoggedUserGetMenuTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create(email='test', password='test')
+        self.user = get_user_model().objects.create(email='test', password='test')
         self.url = reverse('get_menu')
         self.response = self.client.get(self.url)
         self.client.force_login(self.user)
