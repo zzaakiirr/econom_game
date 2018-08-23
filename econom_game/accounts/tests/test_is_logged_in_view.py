@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth import get_user_model
 from django.urls import resolve
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 import json
 
 from ..views import is_logged_in
