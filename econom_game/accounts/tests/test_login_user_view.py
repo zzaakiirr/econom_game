@@ -1,8 +1,7 @@
 import json
 from django.test import TestCase
-from django.contrib import auth
+from django.contrib.auth import get_user, get_user_model
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.urls import resolve
 
 from ..views import login_user
@@ -23,9 +22,9 @@ class LoginTests(TestCase):
 
 class SuccessfulLoginTests(TestCase):
     def setUp(self):
-        User.objects.create_user(username='test', password='test')
+        get_user_model().objects.create_user(email='test', password='test')
         url = reverse('login')
-        data = {'username': 'test', 'password': 'test'}
+        data = {'email': 'test', 'password': 'test'}
         self.response = self.client.post(
             url, json.dumps(data), content_type="application/json"
         )
@@ -34,7 +33,7 @@ class SuccessfulLoginTests(TestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_user_is_authenticated(self):
-        user = auth.get_user(self.client)
+        user = get_user(self.client)
         assert user.is_authenticated()
 
     def test_successful_login_return_correct_data(self):
@@ -46,7 +45,7 @@ class SuccessfulLoginTests(TestCase):
 class InvalidLoginTests(TestCase):
     def setUp(self):
         url = reverse('login')
-        data = {'username': 'does_not_exist', 'password': 'does_not_exist'}
+        data = {'email': 'does_not_exist', 'password': 'does_not_exist'}
         self.response = self.client.post(
             url, json.dumps(data), content_type="application/json"
         )
@@ -55,7 +54,7 @@ class InvalidLoginTests(TestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_user_is_not_authenticated(self):
-        user = auth.get_user(self.client)
+        user = get_user(self.client)
         assert not user.is_authenticated()
 
     def test_invalid_login_return_correct_data(self):
