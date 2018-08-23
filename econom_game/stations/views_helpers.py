@@ -86,7 +86,7 @@ def get_error_response(data):
     elif not is_value_positive_integer(min_bet):
         response['error'] = 'Неверный формат минимальной ставки'
 
-    elif not is_value_positive_integer(min_bet):
+    elif not is_value_positive_integer(max_bet):
         response['error'] = 'Неверный формат максимальной ставки'
 
     elif not is_max_bet_greater_min_bet(max_bet, min_bet):
