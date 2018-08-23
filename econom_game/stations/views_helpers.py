@@ -9,11 +9,7 @@ from accounts.models import User, StationAdmin
 from . import accounts_database_helpers
 
 
-def get_not_recieved_fields(
-            data,
-            expected_fields=("name", "min_bet", "max_bet", "email", "owner")
-        ):
-
+def get_not_recieved_fields(data, expected_fields):
     not_received_fields = []
     for expected_field in expected_fields:
         if not data.get(expected_field):
@@ -66,7 +62,10 @@ def is_email_in_use(email):
 
 
 def get_error_response(data):
-    not_received_fields = get_not_recieved_fields(data)
+    expected_fields = (
+        "name", "complexity", "min_bet", "max_bet", "email", "owner"
+    )
+    not_received_fields = get_not_recieved_fields(data, expected_fields)
     if not_received_fields:
         return get_not_received_all_expected_fields_error_response(
             not_received_fields)
