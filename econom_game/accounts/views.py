@@ -11,9 +11,9 @@ from .views_helpers import get_user_allowed_urls
 def login_user(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode("utf-8"))
-        username = data['username']
-        password = data['password']
-        user = authenticate(username=username, password=password)
+        email = data.get('email')
+        password = data.get('password')
+        user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
             return JsonResponse({"success": True})
