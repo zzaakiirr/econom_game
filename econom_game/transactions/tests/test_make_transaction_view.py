@@ -3,11 +3,11 @@ from django.urls import reverse, resolve
 
 from teams.models import Team, Card
 from stations.models import Station
-from transactions.models import Transaction
+from ..models import Transaction
 
-from transactions.views import make_transaction
+from ..views import make_transaction
 
-from transactions.tests_helpers import make_transaction_request_url
+from .tests_helpers import make_transaction_request_url
 
 
 class MakeTransasctionTests(TestCase):
