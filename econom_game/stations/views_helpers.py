@@ -1,12 +1,14 @@
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
-from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 import json
 
 from .models import Station
-from accounts.models import User, StationAdmin
+from accounts.models import StationAdmin
 
 from . import accounts_database_helpers
+
+User = get_user_model()
 
 
 def get_not_recieved_fields(data, expected_fields):
@@ -35,9 +37,9 @@ def get_not_received_all_expected_fields_error_response(
     return response
 
 
-def is_unique_station_name(station_name):
-    for station in Station.objects.all():
-        if station_name == station.name:
+def is_unique_object_name(object_name, object_model):
+    for object_instance in object_model.objects.all():
+        if object_name == object_instance.name:
             return False
     return True
 
@@ -77,7 +79,7 @@ def get_error_response(data):
     max_bet = data.get("max_bet")
     email = data.get("email")
 
-    if not is_unique_station_name(name):
+    if not is_unique_object_name(name, Station):
         response['error'] = 'Станция с именем "%s" уже существует' % name
 
     elif not is_value_positive_float(complexity):
@@ -101,7 +103,12 @@ def get_error_response(data):
 def get_received_data(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    error_response = get_error_response(data)
+    if __name__ == '__main__':
+        error_response = get_error_response(data)
+    else:
+        import teams
+        error_response = teams.views_helpers.get_error_response(data)
+
     if error_response:
         error_response['success'] = False
         return error_response
