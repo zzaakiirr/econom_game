@@ -103,12 +103,7 @@ def get_error_response(data):
 def get_received_data(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    if __name__ == '__main__':
-        error_response = get_error_response(data)
-    else:
-        import teams
-        error_response = teams.views_helpers.get_error_response(data)
-
+    error_response = get_error_response(data)
     if error_response:
         error_response['success'] = False
         return error_response

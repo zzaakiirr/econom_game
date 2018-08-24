@@ -10,7 +10,7 @@ from accounts.models import StationAdmin
 
 from ..views import create_station
 
-from teams.tests import SuperUserTestCase
+from teams.tests.test_create_card_view import SuperUserTestCase
 
 
 class CreateStationTests(TestCase):
