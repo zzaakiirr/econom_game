@@ -14,7 +14,7 @@ from teams.tests import SuperUserTestCase
 
 
 class CreateStationTests(TestCase):
-    def test_create_station_url_resolves_get_all_stations_view(self):
+    def test_create_station_url_resolves_create_station_view(self):
         view = resolve('/api/v1/create_station/')
         self.assertEquals(view.func, create_station)
 
