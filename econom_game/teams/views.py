@@ -1,11 +1,16 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test
+from django.http import JsonResponse
 
 from rest_framework import generics
 
 from .models import Team, Card
+
 from .serializers import TeamSerializer
+
+from stations.views_helpers import get_received_data
+from . import views_helpers
 
 
 class ListTeamsView(generics.ListAPIView):
@@ -13,20 +18,19 @@ class ListTeamsView(generics.ListAPIView):
     serializer_class = TeamSerializer
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@csrf_exempt
 def create_team(request):
-    id = request.GET['id']
-    name = request.GET['name']
-    login = request.GET['login']
-    card_id = request.GET['card_id']
-    team_card = Card.objects.get(id=card_id)
+    received_data = get_received_data(request)
+    if not received_data['success']:
+        return JsonResponse(received_data)
 
-    new_team = Team.objects.create(
-        id=id, name=name, login=login, card=team_card)
+    new_team = views_helpers.create_new_team(received_data)
+    if not new_team._state.db:
+        return JsonResponse({
+            "status": False, "error": "Команда не была добавлена в базу данных"
+        })
 
-    if new_team._state.db:
-        return JsonResponse({"status": True})
-    return JsonResponse({"status": False})
+    return JsonResponse({"status": True})
 
 
 @user_passes_test(lambda u: u.is_superuser)
