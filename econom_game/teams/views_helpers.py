@@ -63,6 +63,18 @@ def get_error_response(data):
     return response
 
 
+def get_received_data(request):
+    data = json.loads(request.body.decode("utf-8"))
+
+    error_response = get_error_response(data)
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    data['success'] = True
+    return data
+
+
 def create_new_team(data):
     new_team_id = Team.objects.count() + 1
     new_team = Team.objects.create(

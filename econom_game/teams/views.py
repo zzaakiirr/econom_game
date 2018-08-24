@@ -9,7 +9,6 @@ from .models import Team, Card
 
 from .serializers import TeamSerializer
 
-from stations.views_helpers import get_received_data
 from . import views_helpers
 
 
@@ -20,7 +19,7 @@ class ListTeamsView(generics.ListAPIView):
 
 @csrf_exempt
 def create_team(request):
-    received_data = get_received_data(request)
+    received_data = views_helpers.get_received_data(request)
     if not received_data['success']:
         return JsonResponse(received_data)
 
