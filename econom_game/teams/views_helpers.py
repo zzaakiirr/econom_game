@@ -9,22 +9,16 @@ from transactions.models import Bank
 import stations.views_helpers as helpers
 
 
-def is_object_exist(object_id, object_model):
-    try:
-        object_model.objects.get(id=object_id)
-    except ObjectDoesNotExist:
-        return False
-    else:
-        return True
+def get_received_data(request):
+    data = json.loads(request.body.decode("utf-8"))
 
+    error_response = get_error_response(data)
+    if error_response:
+        error_response['success'] = False
+        return error_response
 
-def is_value_string_of_positive_integers(value):
-    try:
-        int(value)
-    except ValueError:
-        return False
-    else:
-        return isinstance(value, str)
+    data['success'] = True
+    return data
 
 
 def get_error_response(data):
@@ -63,16 +57,22 @@ def get_error_response(data):
     return response
 
 
-def get_received_data(request):
-    data = json.loads(request.body.decode("utf-8"))
+def is_object_exist(object_id, object_model):
+    try:
+        object_model.objects.get(id=object_id)
+    except ObjectDoesNotExist:
+        return False
+    else:
+        return True
 
-    error_response = get_error_response(data)
-    if error_response:
-        error_response['success'] = False
-        return error_response
 
-    data['success'] = True
-    return data
+def is_value_string_of_positive_integers(value):
+    try:
+        int(value)
+    except ValueError:
+        return False
+    else:
+        return isinstance(value, str)
 
 
 def create_new_team(data):

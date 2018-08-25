@@ -11,6 +11,55 @@ from . import accounts_database_helpers
 User = get_user_model()
 
 
+def get_received_data(request):
+    data = json.loads(request.body.decode("utf-8"))
+
+    error_response = get_error_response(data)
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    data['success'] = True
+    return data
+
+
+def get_error_response(data):
+    expected_fields = (
+        "name", "complexity", "min_bet", "max_bet", "email", "owner"
+    )
+    not_received_fields = get_not_recieved_fields(data, expected_fields)
+    if not_received_fields:
+        return get_not_received_all_expected_fields_error_response(
+            not_received_fields)
+
+    response = {}
+    name = data.get("name")
+    complexity = data.get("complexity")
+    min_bet = data.get("min_bet")
+    max_bet = data.get("max_bet")
+    email = data.get("email")
+
+    if not is_unique_object_name(name, Station):
+        response['error'] = 'Станция с именем "%s" уже существует' % name
+
+    elif not is_value_positive_float(complexity):
+        response['error'] = 'Неверный формат множителя'
+
+    elif not is_value_positive_integer(min_bet):
+        response['error'] = 'Неверный формат минимальной ставки'
+
+    elif not is_value_positive_integer(max_bet):
+        response['error'] = 'Неверный формат максимальной ставки'
+
+    elif not is_max_bet_greater_min_bet(max_bet, min_bet):
+        response["error"] = "Максимальная ставка меньше минимальной ставки"
+
+    elif is_email_in_use(email):
+        response['error'] = 'email "%s" уже занят' % email
+
+    return response
+
+
 def get_not_recieved_fields(data, expected_fields):
     not_received_fields = []
     for expected_field in expected_fields:
@@ -61,55 +110,6 @@ def is_email_in_use(email):
         if user.email == email:
             return True
     return False
-
-
-def get_error_response(data):
-    expected_fields = (
-        "name", "complexity", "min_bet", "max_bet", "email", "owner"
-    )
-    not_received_fields = get_not_recieved_fields(data, expected_fields)
-    if not_received_fields:
-        return get_not_received_all_expected_fields_error_response(
-            not_received_fields)
-
-    response = {}
-    name = data.get("name")
-    complexity = data.get("complexity")
-    min_bet = data.get("min_bet")
-    max_bet = data.get("max_bet")
-    email = data.get("email")
-
-    if not is_unique_object_name(name, Station):
-        response['error'] = 'Станция с именем "%s" уже существует' % name
-
-    elif not is_value_positive_float(complexity):
-        response['error'] = 'Неверный формат множителя'
-
-    elif not is_value_positive_integer(min_bet):
-        response['error'] = 'Неверный формат минимальной ставки'
-
-    elif not is_value_positive_integer(max_bet):
-        response['error'] = 'Неверный формат максимальной ставки'
-
-    elif not is_max_bet_greater_min_bet(max_bet, min_bet):
-        response["error"] = "Максимальная ставка меньше минимальной ставки"
-
-    elif is_email_in_use(email):
-        response['error'] = 'email "%s" уже занят' % email
-
-    return response
-
-
-def get_received_data(request):
-    data = json.loads(request.body.decode("utf-8"))
-
-    error_response = get_error_response(data)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
 
 
 def create_new_station(data):
