@@ -1,7 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 import json
 
 from .views_helpers import get_user_allowed_urls
