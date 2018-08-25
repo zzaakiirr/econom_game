@@ -3,7 +3,7 @@ from django.urls import reverse, resolve
 
 from teams.models import Team, Card
 from stations.models import Station
-from ..models import Transaction
+from ..models import Transaction, Bank
 
 from ..views import make_transaction
 
@@ -18,14 +18,20 @@ class MakeTransasctionTests(TestCase):
 
 class MakeTransactionTestCase(TestCase):
     def setUp(self):
-        self.card = Card.objects.create(id=999, cvv=999, money_amount=999)
-        Team.objects.create(
-            id=999, name="team_999",
-            login="team_999", card=self.card
+        Bank.objects.create(
+            id=1, name='test', deposit=0,
+            credit_for_one_year=0, credit_for_two_years=0
         )
+        Card.objects.create(id=1, cvv=000, money_amount=100)
+        Team.objects.create(
+            id=1, name="team_1",
+            owner="test", faculty='test', group='test',
+            bank=1, card='1'
+        )
+
         Station.objects.create(
-            id=999, name="station_999",
-            complexity=2, min_bet=100, max_bet=200
+            id=1, name="station_1", owner='test',
+            complexity=2, min_bet=100, max_bet=200,
         )
         self.old_transactions_count = Transaction.objects.count()
 
@@ -34,8 +40,8 @@ class MakeTransactionFromStationToTeamTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
         url = make_transaction_request_url(
-            sender="station_999",
-            recipient="team_999",
+            sender="station_1",
+            recipient="team_1",
             bet_amount=100
         )
         self.response = self.client.get(url)
@@ -52,8 +58,8 @@ class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
         url = make_transaction_request_url(
-            sender="team_999",
-            recipient="recipient_999",
+            sender="team_1",
+            recipient="station_1",
             bet_amount=100
         )
         self.response = self.client.get(url)
@@ -74,14 +80,16 @@ class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
 class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
-        empty_card = Card.objects.create(id=998, cvv=998, money_amount=0)
-        team = Team.objects.create(
-            id=998, name="team_998", login="team_998", card=empty_card
+        Card.objects.create(id=2, cvv=000, money_amount=0)
+        Team.objects.create(
+            id=2, name="test",
+            owner="test", faculty='test', group='test',
+            bank=1, card='2'
         )
         url = make_transaction_request_url(
-            sender="team_998",
-            recipient="station_999",
-            bet_amount=100
+            sender="team_2",
+            recipient="station_1",
+            bet_amount=200
         )
         self.old_transactions_count = Transaction.objects.count()
         self.response = self.client.get(url)
@@ -107,8 +115,8 @@ class MakeBetLessThanStationMinBetTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
         url = make_transaction_request_url(
-            sender="team_999",
-            recipient="recipient_999",
+            sender="team_1",
+            recipient="station_1",
             bet_amount=0
         )
         self.response = self.client.get(url)
@@ -134,8 +142,8 @@ class MakeBetHigherThanStationMaxBetTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
         url = make_transaction_request_url(
-            sender="team_999",
-            recipient="recipient_999",
+            sender="team_1",
+            recipient="station_1",
             bet_amount=300
         )
         self.response = self.client.get(url)
