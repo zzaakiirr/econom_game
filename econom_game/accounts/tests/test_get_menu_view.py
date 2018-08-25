@@ -11,6 +11,9 @@ from ..views import get_menu
 from stations.views_helpers import add_user_model_permissions_to_user
 
 
+User = get_user_model()
+
+
 class GetMenuTests(TestCase):
     def test_get_menu_url_resolves_get_menu_view(self):
         view = resolve('/api/v1/get_menu/')
@@ -33,7 +36,7 @@ class NotLoggedUserGetMenuTests(TestCase):
 
 class LoggedUserGetMenuTests(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create(email='test', password='test')
+        self.user = User.objects.create(email='test', password='test')
         self.url = reverse('get_menu')
         self.response = self.client.get(self.url)
         self.client.force_login(self.user)
