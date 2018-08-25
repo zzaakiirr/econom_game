@@ -1,5 +1,5 @@
 from stations.models import Station
-from teams.models import Team
+from teams.models import Team, Card
 from transactions.models import Transaction
 
 
@@ -32,7 +32,7 @@ def is_team(transaction_participant):
 def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
     team = Team.objects.get(id=sender_id)
     station = Station.objects.get(id=recipient_id)
-    card = team.card
+    card = get_card(team)
 
     if not is_enough_money_on_the_card(station, card):
         result = {
@@ -60,6 +60,12 @@ def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
     return result
 
 
+def get_card(team):
+    card_id = int(team.card)
+    card = Card.objects.get(id=card_id)
+    return card
+
+
 def is_valid_bet(bet_amount, station):
     return station.min_bet <= bet_amount <= station.max_bet
 
@@ -71,7 +77,7 @@ def is_enough_money_on_the_card(station, card):
 def get_money_from_station(sender_id, recipient_id, bet_amount):
     station = Station.objects.get(id=sender_id)
     team = Team.objects.get(id=recipient_id)
-    card = team.card
+    card = get_card(team)
 
     card.money_amount += bet_amount * station.complexity
     card.save()
