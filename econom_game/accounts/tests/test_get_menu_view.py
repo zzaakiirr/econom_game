@@ -64,6 +64,18 @@ class SuperUserGetMenuTests(LoggedUserGetMenuTests):
         self.response = self.client.get(self.url)
 
     def test_super_user_get_menu_return_correct_data(self):
-        expected_data = {"user_allowed_urls": ['/admin/add_station/']}
+        expected_data = {
+            "user_allowed_urls": [
+                '/admin/add_station/',
+                '/admin/add_team/',
+                '/admin/confirm_transaction/',
+                '/admin/credit_list/',
+                '/admin/debit_list/',
+                '/admin/shadow_economy/',
+                '/admin/shares_list/',
+                '/admin/start/',
+                '/admin/station_transactions/',
+            ]
+        }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
