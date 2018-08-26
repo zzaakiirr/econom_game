@@ -23,11 +23,11 @@ class CreateCardTest(SuperUserTestCase):
     def setUp(self):
         super().setUp()
         url = (
-            "%s?id=999&cvv=999&money_amount=999" %
+            "%s?id=1&pay_pass=1&money_amount=1" %
             reverse("create_card")
         )
         self.response = self.client.get(url)
-        self.card = Card.objects.get(id=999)
+        self.card = Card.objects.get(id=1)
 
     def test_create_team_view_success_status_code(self):
         self.assertEquals(self.response.status_code, 200)

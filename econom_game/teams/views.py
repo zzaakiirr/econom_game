@@ -35,10 +35,12 @@ def create_team(request):
 @user_passes_test(lambda u: u.is_superuser)
 def create_card(request):
     id = request.GET['id']
-    cvv = request.GET['cvv']
+    pay_pass = request.GET['pay_pass']
     money_amount = request.GET['money_amount']
 
-    new_card = Card.objects.create(id=id, cvv=cvv, money_amount=money_amount)
+    new_card = Card.objects.create(
+        id=id, pay_pass=pay_pass, money_amount=money_amount
+    )
 
     if new_card._state.db:
         return JsonResponse({"status": True})
