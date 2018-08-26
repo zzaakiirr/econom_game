@@ -1,9 +1,8 @@
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
 import json
 
-from .models import Team, Card
+from .models import Team
+from cards.models import Card
 from banks.models import Bank
 
 import stations.views_helpers as helpers

@@ -1,7 +1,8 @@
 from django.urls import reverse, resolve
 from django.test import TestCase
 
-from ..models import Team, Card
+from cards.models import Card
+from ..models import Team
 
 from ..serializers import TeamSerializer
 

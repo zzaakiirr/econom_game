@@ -1,5 +1,6 @@
 from stations.models import Station
-from teams.models import Team, Card
+from teams.models import Team
+from cards.models import Card
 from .models import Transaction
 
 

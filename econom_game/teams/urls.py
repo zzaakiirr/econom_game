@@ -14,9 +14,4 @@ urlpatterns = [
         views.create_team,
         name='create_team'
     ),
-    url(
-        r'^api/v1/create_card/$',
-        views.create_card,
-        name='create_card'
-    ),
 ]

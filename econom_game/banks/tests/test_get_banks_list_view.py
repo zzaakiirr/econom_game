@@ -6,7 +6,7 @@ from ..models import Bank
 
 from ..views import get_banks_list
 
-from teams.tests.test_create_card_view import SuperUserTestCase
+from cards.tests.test_create_card_view import SuperUserTestCase
 
 
 class GetBanksListTests(TestCase):

@@ -5,12 +5,12 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
 import json
 
-from ..models import Station
 from accounts.models import StationAdmin
+from ..models import Station
 
 from ..views import create_station
 
-from teams.tests.test_create_card_view import SuperUserTestCase
+from cards.tests.test_create_card_view import SuperUserTestCase
 
 
 class CreateStationTests(TestCase):

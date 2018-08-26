@@ -1,10 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse, resolve
 
-from teams.models import Team, Card
+from teams.models import Team
+from cards.models import Card
 from stations.models import Station
-from ..models import Transaction
 from banks.models import Bank
+from ..models import Transaction
 
 from ..views import make_transaction
 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'stations',
     'teams',
     'banks',
+    'cards',
     'transactions',
 ]
 
