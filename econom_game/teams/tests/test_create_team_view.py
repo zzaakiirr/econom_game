@@ -52,6 +52,12 @@ class SuccessfulCreateTeamTest(TestCase):
 class InvalidBankFormatCreateTeamTests(TestCase):
     def setUp(self):
         self.url = reverse("create_team")
+        Bank.objects.create(
+            id=1, name='test', deposit=0,
+            credit_for_one_year=0, credit_for_two_years=0
+        )
+        Card.objects.create(id=1, pay_pass='1', money_amount=0)
+
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
             'group': 'test', 'bank': -1, 'card': '1'
@@ -99,7 +105,7 @@ class NotGivedManyRequiredFieldsCreateTeamTests(
         super().setUp()
         data = {
             'faculty': 'test', 'group': 'test',
-            'bank': -1, 'card': '1'
+            'bank': 1, 'card': '1'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -144,13 +150,9 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
 class InvalidCardFormatCreateTeamTest(InvalidBankFormatCreateTeamTests):
     def setUp(self):
         super().setUp()
-        Bank.objects.create(
-            id=1, name='test', deposit=0,
-            credit_for_one_year=0, credit_for_two_years=0
-        )
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': 1
+            'group': 'test', 'bank': 1, 'card': 'invalid_format' 
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -170,7 +172,7 @@ class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
         super().setUp()
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': 1
+            'group': 'test', 'bank': 2, 'card': '1'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -188,13 +190,9 @@ class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
 class CardDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
     def setUp(self):
         super().setUp()
-        Bank.objects.create(
-            id=1, name='test', deposit=0,
-            credit_for_one_year=0, credit_for_two_years=0
-        )
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': "1"
+            'group': 'test', 'bank': 1, 'card': '2'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"

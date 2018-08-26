@@ -39,8 +39,11 @@ def get_error_response(data):
     bank = data.get("bank")
     card = data.get("card")
 
-    if not helpers.is_unique_object_name(name, Team):
+    if not helpers.is_unique_field('name', name, Team):
         response['error'] = 'Команда с именем "%s" уже существует' % name
+
+    elif not helpers.is_unique_field('card', card, Team):
+        response['error'] = 'Команда с картой "%s" уже существует' % card
 
     elif not helpers.is_value_positive_integer(bank):
         response['error'] = 'Неверный формат банка'
