@@ -26,8 +26,9 @@ class SuccessfulCreateTeamTest(TestCase):
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(id=1, pay_pass='1', money_amount=0)
-
+        Card.objects.create(
+            id=1, card_number='1', chip_number='1', money_amount=0
+        )
         url = reverse("create_team")
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
@@ -57,8 +58,9 @@ class InvalidBankFormatCreateTeamTests(TestCase):
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(id=1, pay_pass='1', money_amount=0)
-
+        Card.objects.create(
+            id=1, card_number='1', chip_number='1', money_amount=0
+        )
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
             'group': 'test', 'bank': -1, 'card': '1'

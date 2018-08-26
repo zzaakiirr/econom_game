@@ -11,10 +11,12 @@ from ..views import ListTeamsView
 
 class GetAllTeamsTest(TestCase):
     def setUp(self):
-        card = Card.objects.create(id=1, pay_pass='1', money_amount=0)
+        Card.objects.create(
+            id=1, card_number='1', chip_number='1', money_amount=0
+        )
         Team.objects.create(
-            id=999, name="test", owner="test", faculty="test", group="test",
-            bank=1, card="0"
+            id=1, name="test", owner="test", faculty="test", group="test",
+            bank=1, card="1"
         )
         url = reverse("all_teams")
         self.response = self.client.get(url)
