@@ -1,6 +1,6 @@
 from stations.models import Station
 from teams.models import Team, Card
-from transactions.models import Transaction
+from .models import Transaction
 
 
 def get_transaction_result(sender, recipient, bet_amount):
