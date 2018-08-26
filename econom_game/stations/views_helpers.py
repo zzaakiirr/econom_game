@@ -39,7 +39,7 @@ def get_error_response(data):
     max_bet = data.get("max_bet")
     email = data.get("email")
 
-    if not is_unique_object_name(name, Station):
+    if not is_unique_field(field_name='name', field_value=name, model=Station):
         response['error'] = 'Станция с именем "%s" уже существует' % name
 
     elif not is_value_positive_float(complexity):
@@ -86,9 +86,9 @@ def get_not_received_all_expected_fields_error_response(
     return response
 
 
-def is_unique_object_name(object_name, object_model):
-    for object_instance in object_model.objects.all():
-        if object_name == object_instance.name:
+def is_unique_field(field_name, field_value, model):
+    for object_instance in model.objects.values():
+        if field_value == object_instance.get(field_name):
             return False
     return True
 
