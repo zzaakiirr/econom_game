@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'', include('accounts.urls')),
     url(r'', include('teams.urls')),
     url(r'', include('stations.urls')),
+    url(r'', include('banks.urls')),
     url(r'', include('transactions.urls')),
 
     url(r'', include('accounts.station_admin_allowed_urls')),
