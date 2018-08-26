@@ -98,7 +98,7 @@ def is_value_positive_float(value):
 
 
 def is_value_positive_integer(value):
-    return value > 0 and isinstance(value, int)
+    return isinstance(value, int) and value >= 0
 
 
 def is_max_bet_greater_min_bet(max_bet, min_bet):

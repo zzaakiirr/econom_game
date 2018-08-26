@@ -29,7 +29,7 @@ class CreateCardTests(TestCase):
 class SuccessfulCreateCardTest(TestCase):
     def setUp(self):
         url = reverse("create_card")
-        data = {'card': '1', 'pay_pass': '1', 'money_amount': 1}
+        data = {'card_number': '1', 'chip_number': '1', 'money_amount': 1}
         self.response = self.client.post(
             url, json.dumps(data), content_type="application/json"
         )
@@ -47,10 +47,13 @@ class SuccessfulCreateCardTest(TestCase):
         self.assertJSONEqual(response_content, expected_data)
 
 
-class InvalidCardFormatCreateCardTests(TestCase):
+class InvalidCardNumberFormatCreateCardTests(TestCase):
     def setUp(self):
         self.url = reverse("create_card")
-        data = {'card': 'invalid_format', 'pay_pass': '1', 'money_amount': 1}
+        data = {
+            'card_number': 'invalid_format', 'chip_number': '1',
+            'money_amount': 1
+        }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
@@ -64,29 +67,29 @@ class InvalidCardFormatCreateCardTests(TestCase):
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
-            'error': 'Неверный формат карты'
+            'error': 'Неверный формат номера карты'
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
 
 class NotGivedOneRequiredFieldCreateCardTests(
-        InvalidCardFormatCreateCardTests):
+        InvalidCardNumberFormatCreateCardTests):
     def setUp(self):
         super().setUp()
-        data = {'pay_pass': '1', 'money_amount': 1}
+        data = {'chip_number': '1', 'money_amount': 1}
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
 
     def test_return_correct_data(self):
-        expected_data = {'success': False, 'error': 'Поле card пустое'}
+        expected_data = {'success': False, 'error': 'Поле card_number пустое'}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
 
 class NotGivedManyRequiredFieldsCreateCardTests(
-        InvalidCardFormatCreateCardTests):
+        InvalidCardNumberFormatCreateCardTests):
     def setUp(self):
         super().setUp()
         data = {'money_amount': 1}
@@ -96,19 +99,25 @@ class NotGivedManyRequiredFieldsCreateCardTests(
 
     def test_return_correct_data(self):
         expected_data = {
-            'success': False, 'error': 'Поля [card, pay_pass] пустые'
+            'success': False, 'error': 'Поля [card_number, chip_number] пустые'
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
 
-class NotUniqueCardFieldCreateCardTests(InvalidCardFormatCreateCardTests):
+class NotUniqueCardNumberCreateCardTests(
+        InvalidCardNumberFormatCreateCardTests):
     def setUp(self):
         super().setUp()
-        self.card = '1'
-        Card.objects.create(id=1, card=self.card, pay_pass='1', money_amount=0)
-        data = {'card': self.card, 'pay_pass': '1', 'money_amount': 1}
-
+        self.card_number = '1'
+        Card.objects.create(
+            id=1, card_number=self.card_number, chip_number='1',
+            money_amount=0
+        )
+        data = {
+            'card_number': self.card_number, 'chip_number': '1',
+            'money_amount': 1
+        }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
@@ -119,17 +128,21 @@ class NotUniqueCardFieldCreateCardTests(InvalidCardFormatCreateCardTests):
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
-            'error': 'Карта уже существует'
+            'error': 'Карта с номером %s уже существует' % self.card_number
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
 
-class InvalidPayPassFormatCreateCardTest(InvalidCardFormatCreateCardTests):
+class InvalidChipNumberFormatCreateCardTest(
+        InvalidCardNumberFormatCreateCardTests):
     def setUp(self):
         super().setUp()
         self.url = reverse("create_card")
-        data = {'card': '1', 'pay_pass': 'invalid_format', 'money_amount': 1}
+        data = {
+            'card_number': '1', 'chip_number': 'invalid_format',
+            'money_amount': 1
+        }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
@@ -137,21 +150,25 @@ class InvalidPayPassFormatCreateCardTest(InvalidCardFormatCreateCardTests):
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
-            'error': 'Неверный формат PayPass'
+            'error': 'Неверный формат номера чипа'
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
 
-class NotUniquePayPassFieldCreateCardTests(InvalidCardFormatCreateCardTests):
+class NotUniqueChipNumberFieldCreateCardTests(
+        InvalidCardNumberFormatCreateCardTests):
     def setUp(self):
         super().setUp()
-        self.pay_pass = '1'
+        self.chip_number = '1'
         Card.objects.create(
-            id=1, card='1', pay_pass=self.pay_pass, money_amount=0
+            id=1, card_number='1', chip_number=self.chip_number,
+            money_amount=0
         )
-        data = {'card': '2', 'pay_pass': self.pay_pass, 'money_amount': 1}
-
+        data = {
+            'card_number': '2', 'chip_number': self.chip_number,
+            'money_amount': 1
+        }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
@@ -165,7 +182,31 @@ class NotUniquePayPassFieldCreateCardTests(InvalidCardFormatCreateCardTests):
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
-            'error': 'Картa с PayPass "%s" уже существует' % self.pay_pass
+            'error': (
+                'Картa с номером чипа "%s" уже существует' % self.chip_number
+            )
+        }
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+
+
+class InvalidMoneyAmountFormatCreateCardTest(
+        InvalidCardNumberFormatCreateCardTests):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("create_card")
+        data = {
+            'card_number': '1', 'chip_number': '1',
+            'money_amount': 'invalid_format'
+        }
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False,
+            'error': 'Неверный формат количества денег'
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)

@@ -22,7 +22,7 @@ def get_received_data(request):
 
 
 def get_error_response(data):
-    expected_fields = ("card", "pay_pass", "money_amount")
+    expected_fields = ("card_number", "chip_number", "money_amount")
 
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
@@ -32,21 +32,23 @@ def get_error_response(data):
             not_received_fields)
 
     response = {}
-    card = data.get("card")
-    pay_pass = data.get("pay_pass")
+    card_number = data.get("card_number")
+    chip_number = data.get("chip_number")
     money_amount = data.get("money_amount")
 
-    if not helpers.is_unique_field('card', card, Card):
-        response['error'] = 'Карта уже существует'
+    if not helpers.is_unique_field('card_number', card_number, Card):
+        response['error'] = 'Карта с номером %s уже существует' % card_number
 
-    elif not helpers.is_unique_field('pay_pass', pay_pass, Card):
-        response['error'] = 'Картa с PayPass "%s" уже существует' % pay_pass
+    elif not helpers.is_unique_field('chip_number', chip_number, Card):
+        response['error'] = (
+            'Картa с номером чипа "%s" уже существует' % chip_number
+        )
 
-    elif not is_value_string_of_positive_integers(card):
-        response['error'] = 'Неверный формат карты'
+    elif not is_value_string_of_positive_integers(card_number):
+        response['error'] = 'Неверный формат номера карты'
 
-    elif not is_value_string_of_positive_integers(pay_pass):
-        response['error'] = 'Неверный формат PayPass'
+    elif not is_value_string_of_positive_integers(chip_number):
+        response['error'] = 'Неверный формат номера чипа'
 
     elif not helpers.is_value_positive_integer(money_amount):
         response['error'] = 'Неверный формат количества денег'
@@ -57,7 +59,8 @@ def get_error_response(data):
 def create_new_card(data):
     new_card_id = Card.objects.count() + 1
     new_card = Card.objects.create(
-        id=new_card_id, card=data.get('card'), pay_pass=data.get('pay_pass'),
+        id=new_card_id, card_number=data.get('card_number'),
+        chip_number=data.get('chip_number'),
         money_amount=data.get('money_amount')
     )
     return new_card
