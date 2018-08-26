@@ -7,6 +7,7 @@ from .models import User, StationAdmin
 
 admin.site.register(StationAdmin)
 
+
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     """Define admin model for custom User model with no email field."""
