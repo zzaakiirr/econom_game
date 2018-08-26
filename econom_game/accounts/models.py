@@ -50,7 +50,42 @@ class User(AbstractUser):
 
     class Meta:
         permissions = (
-            ("add_station", "Can view '/admin/add_station/' page"),
+            (
+                "add_station",
+                "Can view '/admin/add_station/' page"
+            ),
+            (
+                "add_team",
+                "Can view '/admin/add_team/' page"
+            ),
+            (
+                "view_shares_list",
+                "Can view '/admin/shares_list/' page"
+            ),
+            (
+                "confirm_transaction",
+                "Can view '/admin/confirm_transaction/' page"
+            ),
+            (
+                "view_shadow_economy",
+                "Can view '/admin/shadow_economy/' page"
+            ),
+            (
+                "view_station_transactions",
+                "Can view '/admin/station_transactions/' page"
+            ),
+            (
+                "view_debit_list",
+                "Can view '/admin/debit_list/' page"
+            ),
+            (
+                "view_credit_list",
+                "Can view '/admin/credit_list/' page"
+            ),
+            (
+                "view_start",
+                "Can view '/admin/start/' page"
+            ),
         )
 
 

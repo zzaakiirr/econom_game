@@ -2,7 +2,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from accounts import views as accounts_views
-from .empty_view import empty_view
 
 
 urlpatterns = [
@@ -13,6 +12,6 @@ urlpatterns = [
     url(r'', include('stations.urls')),
     url(r'', include('transactions.urls')),
 
-    url(r"^admin/station/$", empty_view, name='view_station'),
-    url(r"^admin/add_station/$", empty_view, name='add_station'),
+    url(r'', include('accounts.station_admin_allowed_urls')),
+    url(r'', include('accounts.super_user_allowed_urls')),
 ]
