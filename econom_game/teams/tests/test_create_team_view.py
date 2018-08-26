@@ -32,7 +32,8 @@ class SuccessfulCreateTeamTest(TestCase):
         url = reverse("create_team")
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': '1'
+            'group': 'test', 'bank': 1, 'card': '1',
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             url, json.dumps(data), content_type="application/json"
@@ -63,7 +64,8 @@ class InvalidBankFormatCreateTeamTests(TestCase):
         )
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': -1, 'card': '1'
+            'group': 'test', 'bank': -1, 'card': '1', 
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -90,7 +92,7 @@ class NotGivedOneRequiredFieldCreateTeamTests(
         super().setUp()
         data = {
             'owner': 'test', 'faculty': 'test', 'group': 'test',
-            'bank': 1, 'card': '1'
+            'bank': 1, 'card': '1', 'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -108,7 +110,7 @@ class NotGivedManyRequiredFieldsCreateTeamTests(
         super().setUp()
         data = {
             'faculty': 'test', 'group': 'test',
-            'bank': 1, 'card': '1'
+            'bank': 1, 'card': '1', 'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -128,11 +130,12 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
         self.name = 'test'
         Team.objects.create(
             id=1, name=self.name, owner='test', faculty='test',
-            group='test', bank=1, card='1',
+            group='test', bank=1, card='1', card_method='card_number'
         )
         data = {
             'name': self.name, 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': '1'
+            'group': 'test', 'bank': 1, 'card': '1',
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -150,12 +153,42 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
         self.assertJSONEqual(response_content, expected_data)
 
 
+class NotUniqueCardCreateTeamTests(InvalidBankFormatCreateTeamTests):
+    def setUp(self):
+        super().setUp()
+        self.card = '1'
+        Team.objects.create(
+            id=1, name='test_1', owner='test', faculty='test',
+            group='test', bank=1, card=self.card, card_method='card_number'
+        )
+        data = {
+            'name': 'test_2', 'owner': 'test', 'faculty': 'test',
+            'group': 'test', 'bank': 1, 'card': self.card,
+            'card_method': 'chip_number'
+        }
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+
+    def test_do_not_add_team_to_database(self):
+        self.assertEquals(Team.objects.count(), 1)
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False,
+            'error': 'Команда с картой "%s" уже существует' % self.card
+        }
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+
+
 class InvalidCardFormatCreateTeamTest(InvalidBankFormatCreateTeamTests):
     def setUp(self):
         super().setUp()
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': 'invalid_format' 
+            'group': 'test', 'bank': 1, 'card': 'invalid_format',
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -175,7 +208,8 @@ class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
         super().setUp()
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 2, 'card': '1'
+            'group': 'test', 'bank': 2, 'card': '1',
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
@@ -195,7 +229,8 @@ class CardDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
         super().setUp()
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': '2'
+            'group': 'test', 'bank': 1, 'card': '2',
+            'card_method': 'chip_number'
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
