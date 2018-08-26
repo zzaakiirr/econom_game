@@ -23,7 +23,7 @@ class MakeTransactionTestCase(TestCase):
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(id=1, cvv=000, money_amount=100)
+        Card.objects.create(id=1, pay_pass='1', money_amount=100)
         Team.objects.create(
             id=1, name="team_1",
             owner="test", faculty='test', group='test',
@@ -81,7 +81,7 @@ class MakeValidBetAtTheStationTests(MakeTransactionTestCase):
 class MakeBetWhenNotEnoghMoneyOnTheCardTests(MakeTransactionTestCase):
     def setUp(self):
         super().setUp()
-        Card.objects.create(id=2, cvv=000, money_amount=0)
+        Card.objects.create(id=2, pay_pass='2', money_amount=0)
         Team.objects.create(
             id=2, name="test",
             owner="test", faculty='test', group='test',
