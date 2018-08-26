@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
 from stations.models import Station
+from banks.models import Bank
 
 
 class UserManager(BaseUserManager):
@@ -100,3 +101,18 @@ class StationAdmin(models.Model):
 
     def __str__(self):
         return '%s admin' % self.station.name
+
+
+class Operator(models.Model):
+    bank = models.ForeignKey(Bank, related_name='bank', default=None)
+    user = models.OneToOneField(User)
+
+    def __str__(self):
+        return '%s bank operator' % self.bank.name
+
+
+class Financier(models.Model):
+    user = models.OneToOneField(User)
+
+    def __str__(self):
+        return '%s' % self.user.first_name
