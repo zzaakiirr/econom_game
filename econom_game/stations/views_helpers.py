@@ -63,7 +63,7 @@ def get_error_response(data):
 def get_not_recieved_fields(data, expected_fields):
     not_received_fields = []
     for expected_field in expected_fields:
-        if not data.get(expected_field):
+        if data.get(expected_field) is None:
             not_received_fields.append(expected_field)
     return not_received_fields
 
