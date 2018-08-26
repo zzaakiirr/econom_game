@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator
 
 class Card(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
-    cvv = models.PositiveIntegerField(validators=[MaxValueValidator(999)])
+    pay_pass = models.CharField(max_length=25, unique=True)
     money_amount = models.PositiveIntegerField()
 
     def __str__(self):
@@ -13,12 +13,12 @@ class Card(models.Model):
 
 class Team(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, unique=True)
     owner = models.CharField(max_length=25)
     faculty = models.CharField(max_length=25)
     group = models.CharField(max_length=25)
     bank = models.PositiveIntegerField()
-    card = models.CharField(max_length=25)
+    card = models.CharField(max_length=25, unique=True)
 
     def __str__(self):
         return self.name
