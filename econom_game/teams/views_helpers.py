@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 
 from .models import Team, Card
-from transactions.models import Bank
+from banks.models import Bank
 
 import stations.views_helpers as helpers
 

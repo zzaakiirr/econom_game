@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 import json
 
 from ..models import Team, Card
-from transactions.models import Bank
+from banks.models import Bank
 
 from ..views import create_team
 

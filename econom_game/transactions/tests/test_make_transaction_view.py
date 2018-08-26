@@ -3,7 +3,8 @@ from django.urls import reverse, resolve
 
 from teams.models import Team, Card
 from stations.models import Station
-from ..models import Transaction, Bank
+from ..models import Transaction
+from banks.models import Bank
 
 from ..views import make_transaction
 
