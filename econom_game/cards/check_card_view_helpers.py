@@ -44,7 +44,24 @@ def get_error_response(data):
         else:
             response['error'] = 'Неверный формат номера чипа карты'
 
+    elif not is_card_exist(card_type, card):
+        response['error'] = 'Такой карты не существует'
+
     return response
+
+
+def is_card_exist(card_type, card):
+    if card_type == 'card_number':
+        try:
+            Card.objects.get(card_number=card)
+        except ObjectDoesNotExist:
+            return False
+    else:
+        try:
+            Card.objects.get(chip_number=card)
+        except ObjectDoesNotExist:
+            return False
+    return True
 
 
 def get_team_by_card(data):
