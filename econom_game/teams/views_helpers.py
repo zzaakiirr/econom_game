@@ -21,7 +21,9 @@ def get_received_data(request):
 
 
 def get_error_response(data):
-    expected_fields = ("name", "owner", "faculty", "group", "bank", "card")
+    expected_fields = (
+        "name", "owner", "faculty", "group", "bank", "card", "card_type"
+    )
 
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
@@ -37,6 +39,7 @@ def get_error_response(data):
     group = data.get("group")
     bank = data.get("bank")
     card = data.get("card")
+    card_type = data.get("card_type")
 
     if not helpers.is_unique_field('name', name, Team):
         response['error'] = 'Команда с именем "%s" уже существует' % name
@@ -53,7 +56,10 @@ def get_error_response(data):
     elif not is_value_string_of_positive_integers(card):
         response['error'] = 'Неверный формат карты'
 
-    elif not is_object_exist(object_id=int(card), object_model=Card):
+    elif not is_valid_card_type(card_type):
+        response['error'] = 'Неверный формат метода карты'
+
+    elif not is_card_exist(card, card_type):
         response['error'] = 'Такой карты не существует'
 
     return response
@@ -66,6 +72,26 @@ def is_object_exist(object_id, object_model):
         return False
     else:
         return True
+
+
+def is_card_exist(received_number, card_type):
+    if card_type == 'card_number':
+        for card in Card.objects.all():
+            if received_number == card.card_number:
+                return True
+    elif card_type == 'chip_number':
+        for card in Card.objects.all():
+            if received_number == card.chip_number:
+                return True
+    return False
+
+
+def is_valid_card_type(received_card_type):
+    card_types = ("card_number", "chip_number")
+    for card_type in card_types:
+        if received_card_type == card_type:
+            return True
+    return False
 
 
 def is_value_string_of_positive_integers(value):

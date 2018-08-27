@@ -62,7 +62,7 @@ class SuccessfulCreateStationTest(SuperUserTestCase):
         self.assertTrue(is_equal_permissions)
 
     def test_successful_create_station_return_correct_data(self):
-        expected_data = {"status": True}
+        expected_data = {"success": True}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 

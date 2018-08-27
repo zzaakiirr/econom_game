@@ -16,7 +16,7 @@ class GetAllTeamsTest(TestCase):
         )
         Team.objects.create(
             id=1, name="test", owner="test", faculty="test", group="test",
-            bank=1, card="1"
+            bank=1, card="1", card_type='card_number'
         )
         url = reverse("all_teams")
         self.response = self.client.get(url)
