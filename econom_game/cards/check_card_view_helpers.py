@@ -4,7 +4,7 @@ import json
 from teams.models import Team
 from .models import Card
 
-import stations.views_helpers as helpers
+import stations.create_station_view_helpers as helpers
 from teams.views_helpers import is_value_string_of_positive_integers
 from teams.views_helpers import is_valid_card_type
 
@@ -66,10 +66,16 @@ def is_card_exist(card_type, card):
 
 def get_team_by_card(data):
     card = data.get('card')
+    card_type = data.get('card_type')
+
     for team in Team.objects.all():
         team_card = get_team_card(team)
-        if card == team_card.card_number or card == team_card.chip_number:
-            return team
+        if card_type == 'card_number':
+            if card == team_card.card_number:
+                return team
+        else:
+            if card == team_card.chip_number:
+                return team
     return None
 
 
