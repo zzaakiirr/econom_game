@@ -56,6 +56,9 @@ def get_error_response(data):
     elif not is_value_string_of_positive_integers(card):
         response['error'] = 'Неверный формат карты'
 
+    elif not is_valid_card_method(card_method):
+        response['error'] = 'Неверный формат метода карты'
+
     elif not is_card_exist(card, card_method):
         response['error'] = 'Такой карты не существует'
 
@@ -82,6 +85,13 @@ def is_card_exist(received_number, card_method):
                 return True
     return False
 
+
+def is_valid_card_method(received_card_method):
+    card_methods = ("card_number", "chip_number")
+    for card_method in card_methods:
+        if received_card_method == card_method:
+            return True
+    return False
 
 def is_value_string_of_positive_integers(value):
     try:

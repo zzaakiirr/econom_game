@@ -203,6 +203,27 @@ class InvalidCardFormatCreateTeamTest(InvalidBankFormatCreateTeamTests):
         self.assertJSONEqual(response_content, expected_data)
 
 
+class InvalidCardMethodFormatCreateTeamTest(InvalidBankFormatCreateTeamTests):
+    def setUp(self):
+        super().setUp()
+        data = {
+            'name': 'test', 'owner': 'test', 'faculty': 'test',
+            'group': 'test', 'bank': 1, 'card': '1',
+            'card_method': 'invalid_format'
+        }
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False,
+            'error': 'Неверный формат метода карты'
+        }
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+
+
 class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
     def setUp(self):
         super().setUp()
