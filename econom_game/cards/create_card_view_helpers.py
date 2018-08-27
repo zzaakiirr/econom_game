@@ -5,7 +5,7 @@ import json
 
 from .models import Card
 
-import stations.views_helpers as helpers
+import stations.create_station_view_helpers as helpers
 from teams.views_helpers import is_value_string_of_positive_integers
 
 

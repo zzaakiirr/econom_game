@@ -5,7 +5,7 @@ from .models import Team
 from cards.models import Card
 from banks.models import Bank
 
-import stations.views_helpers as helpers
+import stations.create_station_view_helpers as helpers
 
 
 def get_received_data(request):

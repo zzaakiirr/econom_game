@@ -8,7 +8,7 @@ from accounts.models import User, StationAdmin
 
 from ..views import get_menu
 
-from stations.views_helpers import add_user_model_permissions_to_user
+import stations.create_station_view_helpers as helpers
 
 
 User = get_user_model()
@@ -48,7 +48,7 @@ class LoggedUserGetMenuTests(TestCase):
 class StationAdminGetMenuTests(LoggedUserGetMenuTests):
     def setUp(self):
         super().setUp()
-        add_user_model_permissions_to_user(self.user, StationAdmin)
+        helpers.add_user_model_permissions_to_user(self.user, StationAdmin)
         self.response = self.client.get(self.url)
 
     def test_station_admin_get_menu_return_correct_data(self):
@@ -60,7 +60,7 @@ class StationAdminGetMenuTests(LoggedUserGetMenuTests):
 class SuperUserGetMenuTests(LoggedUserGetMenuTests):
     def setUp(self):
         super().setUp()
-        add_user_model_permissions_to_user(self.user, User)
+        helpers.add_user_model_permissions_to_user(self.user, User)
         self.response = self.client.get(self.url)
 
     def test_super_user_get_menu_return_correct_data(self):
