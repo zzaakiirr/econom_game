@@ -141,7 +141,6 @@ class NotGivedManyRequiredFieldsCreateCardTests(
 
 class CardDoesNotHaveTeamTests(TestCase):
     def setUp(self):
-        super().setUp()
         Card.objects.create(
             id=1, card_number='1', chip_number='1', money_amount=0
         )
@@ -156,5 +155,24 @@ class CardDoesNotHaveTeamTests(TestCase):
 
     def test_return_correct_data(self):
         expected_data = {"success": False, "error": "У этой карты нет команды"}
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+
+
+class CardDoesNotExistTests(TestCase):
+    def setUp(self):
+        url = reverse("check_card")
+        data = {'card_type': 'card_number', 'card': '1'}
+        self.response = self.client.post(
+            url, json.dumps(data), content_type="application/json"
+        )
+
+    def test_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_return_correct_data(self):
+        expected_data = {
+            "success": False, "error": "Такой карты не существует"
+        }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
