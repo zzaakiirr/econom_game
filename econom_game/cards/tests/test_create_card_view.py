@@ -42,7 +42,7 @@ class SuccessfulCreateCardTest(TestCase):
         self.assertTrue(self.card._state.db)
 
     def test_successful_create_card_return_correct_data(self):
-        expected_data = {"status": True}
+        expected_data = {"success": True}
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
 
