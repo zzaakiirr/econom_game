@@ -8,7 +8,8 @@ from .models import Station
 
 from .serializers import StationSerializer
 
-from . import views_helpers
+from . import create_station_view_helpers
+from . import make_bet_view_helpers
 
 
 class ListStationsView(generics.ListAPIView):
@@ -21,18 +22,18 @@ def create_station(request):
     if not request.user.is_superuser:
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = views_helpers.get_received_data(request)
+    received_data = create_station_view_helpers.get_received_data(request)
     if not received_data['success']:
         return JsonResponse(received_data)
 
-    new_station = views_helpers.create_new_station(received_data)
+    new_station = create_station_view_helpers.create_new_station(received_data)
     if not new_station._state.db:
         return JsonResponse({
             "success": False,
             "error": "Станция не была добавлена в базу данных"
         })
 
-    new_station_admin = views_helpers.create_new_station_admin(
+    new_station_admin = create_station_view_helpers.create_new_station_admin(
         received_data, new_station)
     if not new_station_admin._state.db:
         return JsonResponse({
@@ -40,7 +41,28 @@ def create_station(request):
             "error": "Держатель станции не был добавлен в базу данных"
         })
 
-    views_helpers.add_user_model_permissions_to_user(
+    create_station_view_helpers.add_user_model_permissions_to_user(
         user=new_station_admin.user, user_model=StationAdmin)
+
+    return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def make_bet(request):
+    if not make_bet_view_helpers.get_station_admin(request):
+        return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
+
+    received_data = make_bet_view_helpers.get_received_data(request)
+    if not received_data['success']:
+        return JsonResponse(received_data)
+
+    transaction = make_bet_view_helpers.create_new_transaction(
+        request, received_data
+    )
+    if not transaction._state.db:
+        return JsonResponse({
+            "success": False,
+            "error": "Транзакция не была добавлена в базу данных"
+        })
 
     return JsonResponse({"success": True})

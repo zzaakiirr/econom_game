@@ -14,4 +14,9 @@ urlpatterns = [
         views.create_station,
         name='create_station'
     ),
+    url(
+        r'^api/v1/make_bet/$',
+        views.make_bet,
+        name='make_bet'
+    ),
 ]
