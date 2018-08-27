@@ -13,7 +13,7 @@ def get_transaction_result(sender, recipient, bet_amount):
     else:
         result = get_money_from_station(sender_id, recipient_id, bet_amount)
 
-    if result['status']:
+    if result['success']:
         add_transaction_to_database(sender, recipient, bet_amount)
 
     return result
@@ -37,7 +37,7 @@ def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
 
     if not is_enough_money_on_the_card(station, card):
         result = {
-            "status": False,
+            "success": False,
             "reason": "Your card balance is less than station minimal bet"
         }
         return result
@@ -45,16 +45,16 @@ def make_bet_at_the_station(sender_id, recipient_id, bet_amount):
     if is_valid_bet(bet_amount, station):
         card.money_amount -= bet_amount
         card.save()
-        result = {"status": True}
+        result = {"success": True}
 
     elif bet_amount < station.min_bet:
         result = {
-            "status": False,
+            "success": False,
             "reason": "Station minimal bet is higher"
         }
     elif bet_amount > station.max_bet:
         result = {
-            "status": False,
+            "success": False,
             "reason": "Your bet is too big"
         }
 
@@ -82,7 +82,7 @@ def get_money_from_station(sender_id, recipient_id, bet_amount):
 
     card.money_amount += bet_amount * station.complexity
     card.save()
-    result = {"status": True}
+    result = {"success": True}
 
     return result
 
