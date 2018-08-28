@@ -28,8 +28,8 @@ class SuccessfulMakeBetTests(TestCase):
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(
-            id=1, card_number='1', chip_number='2', money_amount=100
+        self.card = Card.objects.create(
+            id=1, card_number='1', chip_number='1', money_amount=100
         )
         team = Team.objects.create(
             id=1, name='test', owner='test', faculty='test',
@@ -92,8 +92,8 @@ class InvalidCardTypeFormatMakeBetTests(NotStationAdminMakeBetTests):
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(
-            id=1, card_number='1', chip_number='2', money_amount=100
+        self.card = Card.objects.create(
+            id=1, card_number='1', chip_number='1', money_amount=100
         )
         team = Team.objects.create(
             id=1, name='test', owner='test', faculty='test',
@@ -220,3 +220,51 @@ class CardDoesNotExistTests(InvalidCardTypeFormatMakeBetTests):
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)
+
+
+class MakeBetWhenNotEnoghMoneyOnTheCardTests(
+        InvalidCardTypeFormatMakeBetTests):
+    def setUp(self):
+        super().setUp()
+        self.card.money_amount = 0
+        self.card.save()
+        data = {
+            'card_type': 'chip_number',
+            'card': '1',
+            'bet_amount': 100
+        }
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False,
+            'error': 'Недостаточно средств на карте'
+        }
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+        self.card.delete()
+
+
+class MakeInvalidBetForStationTests(InvalidCardTypeFormatMakeBetTests):
+    def setUp(self):
+        super().setUp()
+
+    def test_make_bet_less_station_min_bet_return_correct_data(self):
+        data = {
+            'card_type': 'chip_number',
+            'card': '1',
+            'bet_amount': 10 
+        }
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+
+        expected_data = {
+            'success': False,
+            'error': 'Ставка меньше минимальной или больше максимальной'
+        }
+        response_content = str(self.response.content, encoding='utf8')
+        self.assertJSONEqual(response_content, expected_data)
+        self.card.delete()

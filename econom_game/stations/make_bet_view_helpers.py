@@ -18,7 +18,8 @@ def get_received_data(request):
     data = json.loads(request.body.decode("utf-8"))
 
     station_admin = get_station_admin(request)
-    error_response = get_error_response(data, station_admin)
+    station = station_admin.station
+    error_response = get_error_response(data, station)
     if error_response:
         error_response['success'] = False
         return error_response
@@ -27,7 +28,7 @@ def get_received_data(request):
     return data
 
 
-def get_error_response(data, station_admin):
+def get_error_response(data, station):
     expected_fields = ('bet_amount', 'card_type', 'card')
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
@@ -56,10 +57,13 @@ def get_error_response(data, station_admin):
     elif not check_card.is_card_exist(card_type, card):
         response['error'] = 'Такой карты не существует'
 
+    elif not is_valid_bet(bet_amount, station):
+        response['error'] = 'Ставка меньше минимальной или больше максимальной'
+
     elif not is_enough_money_on_card(data):
         response['error'] = 'Недостаточно средств на карте'
 
-    elif not is_team_for_first_time_in_station(data, station_admin):
+    elif not is_team_for_first_time_in_station(data, station):
         response['error'] = 'Команда уже проходила станцию'
 
     return response
@@ -72,6 +76,10 @@ def get_station_admin(request):
     return None
 
 
+def is_valid_bet(bet_amount, station):
+    return station.min_bet <= bet_amount <= station.max_bet
+
+
 def is_enough_money_on_card(data):
     team = check_card.get_team_by_card(data)
     bet_amount = data.get('bet_amount')
@@ -82,12 +90,21 @@ def is_enough_money_on_card(data):
     return True
 
 
-def is_team_for_first_time_in_station(data, station_admin):
+def is_team_for_first_time_in_station(data, station):
     team = check_card.get_team_by_card(data)
-    station = station_admin.station
     for transaction in Transaction.objects.all():
-        if transaction.sender == team and recipient == station_name:
+        if transaction.sender == team.id and (
+                transaction.recipient == station.id):
             return False
+    return True
+
+
+def exclude_bet_amount_from_card(data):
+    team = check_card.get_team_by_card(data)
+    card = check_card.get_team_card(team)
+    bet_amount = data.get('bet_amount')
+    card.money_amount -= bet_amount
+    card.save()
     return True
 
 
