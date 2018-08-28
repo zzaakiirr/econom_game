@@ -30,7 +30,6 @@ def get_error_response(data, station):
         return helpers.get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
-    response = {}
     bet_amount = data.get("bet_amount")
     card_type = data.get("card_type")
     card = data.get("card")
@@ -75,10 +74,12 @@ def is_enough_money_on_card(data):
 
 def is_team_for_first_time_in_station(data, station):
     team = check_card.get_team_by_card(data)
-    for transaction in Transaction.objects.all():
-        if transaction.sender == team.id and (
-                transaction.recipient == station.id):
-            return False
+    transactions = Transaction.objects.all()
+    if transactions and team:
+        for transaction in transactions:
+            if transaction.sender == team.id and (
+                    transaction.recipient == station.id):
+                return False
     return True
 
 
