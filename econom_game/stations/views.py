@@ -10,6 +10,7 @@ from .serializers import StationSerializer
 
 from . import create_station_view_helpers
 from . import make_bet_view_helpers
+from . import victory_view_helpers
 
 
 class ListStationsView(generics.ListAPIView):
@@ -64,5 +65,33 @@ def make_bet(request):
             "success": False,
             "error": "Транзакция не была добавлена в базу данных"
         })
+
+    return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def victory(request):
+    if not make_bet_view_helpers.get_station_admin(request):
+        return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
+
+    received_data = victory_view_helpers.get_received_data(request)
+    if not received_data['success']:
+        return JsonResponse(received_data)
+
+    if not received_data['victory']:
+        victory_view_helpers.change_victory_status(
+            request, received_data, False
+        )
+        victory_view_helpers.change_transaction_processed_status(
+            request, received_data, True
+        )
+    else:
+        victory_view_helpers.change_victory_status(
+            request, received_data, True
+        )
+        victory_view_helpers.transfer_money_to_card(request, received_data)
+        victory_view_helpers.change_transaction_processed_status(
+            request, received_data, False
+        )
 
     return JsonResponse({"success": True})

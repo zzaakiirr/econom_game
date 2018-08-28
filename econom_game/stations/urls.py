@@ -19,4 +19,9 @@ urlpatterns = [
         views.make_bet,
         name='make_bet'
     ),
+    url(
+        r'^api/v1/victory/$',
+        views.victory,
+        name='victory'
+    ),
 ]

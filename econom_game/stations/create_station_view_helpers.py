@@ -94,7 +94,7 @@ def is_unique_field(field_name, field_value, model):
 
 
 def is_value_positive_float(value):
-    return value > 0 and isinstance(value, float)
+    return isinstance(value, float) and value > 0
 
 
 def is_value_positive_integer(value):
