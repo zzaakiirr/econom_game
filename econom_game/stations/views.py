@@ -89,7 +89,6 @@ def victory(request):
         victory_view_helpers.change_victory_status(
             request, received_data, True
         )
-        victory_view_helpers.transfer_money_to_card(request, received_data)
         victory_view_helpers.change_transaction_processed_status(
             request, received_data, False
         )
