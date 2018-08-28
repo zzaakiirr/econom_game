@@ -31,6 +31,13 @@ def get_error_response(data):
         return helpers.get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
+    error_response = get_card_error_response(data)
+    if error_response:
+        return error_response
+    return None
+
+
+def get_card_error_response(data):
     response = {}
     card_type = data.get("card_type")
     card = data.get("card")
