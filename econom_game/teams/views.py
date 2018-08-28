@@ -24,7 +24,8 @@ def create_team(request):
     new_team = views_helpers.create_new_team(received_data)
     if not new_team._state.db:
         return JsonResponse({
-            "success": False, "error": "Команда не была добавлена в базу данных"
+            "success": False,
+            "error": "Команда не была добавлена в базу данных"
         })
 
     return JsonResponse({"success": True})
