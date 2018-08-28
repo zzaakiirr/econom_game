@@ -54,6 +54,10 @@ def get_card_error_response(data):
     elif not is_card_exist(card_type, card):
         response['error'] = 'Такой карты не существует'
 
+    if not response:
+        if not get_team_by_card(data):
+            response['error'] = 'У этой карты нет команды'
+
     return response
 
 

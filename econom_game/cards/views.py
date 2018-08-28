@@ -27,8 +27,7 @@ def check_card(request):
         return JsonResponse(received_data)
 
     team = check_card_view_helpers.get_team_by_card(received_data)
-    if team:
-        return JsonResponse({"success": True, "team_name": team.name})
     return JsonResponse({
-        "success": False, "error": "У этой карты нет команды"
+        'success': True,
+        'team_name': team.name
     })
