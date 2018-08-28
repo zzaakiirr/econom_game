@@ -255,7 +255,7 @@ class MakeInvalidBetForStationTests(InvalidCardTypeFormatMakeBetTests):
         data = {
             'card_type': 'chip_number',
             'card': '1',
-            'bet_amount': 10 
+            'bet_amount': 10
         }
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
