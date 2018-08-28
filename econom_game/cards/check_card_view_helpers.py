@@ -66,26 +66,38 @@ def is_card_exist(card_type, card):
 
 def get_team_by_card(data):
     card = data.get('card')
+    card_type = data.get('card_type')
     for team in Team.objects.all():
         team_card = get_team_card(team)
-        if card == team_card.card_number or card == team_card.chip_number:
-            return team
+        if team_card:
+            if card_type == 'card_number':
+                if card == team_card.card_number:
+                    return team
+            else:
+                if card == team_card.chip_number:
+                    return team
     return None
 
 
 def get_team_card(team):
-    try:
-        team_card = get_team_card_by_card_number(team)
-    except ObjectDoesNotExist:
-        team_card = get_team_card_by_chip_number(team)
+    team_card = get_team_card_by_card_number(team)
+    if team_card:
+        return team_card
+    team_card = get_team_card_by_chip_number(team)
     return team_card
 
 
 def get_team_card_by_card_number(team):
-    team_card = Card.objects.get(card_number=team.card)
+    try:
+        team_card = Card.objects.get(card_number=team.card)
+    except ObjectDoesNotExist:
+        return None
     return team_card
 
 
 def get_team_card_by_chip_number(team):
-    team_card = Card.objects.get(chip_number=team.card)
+    try:
+        team_card = Card.objects.get(chip_number=team.card)
+    except ObjectDoesNotExist:
+        return None
     return team_card

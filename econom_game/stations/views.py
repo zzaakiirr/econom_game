@@ -44,3 +44,30 @@ def create_station(request):
         user=new_station_admin.user, user_model=StationAdmin)
 
     return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def make_bet(request):
+    if not make_bet_view_helpers.get_station_admin(request):
+        return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
+
+    received_data = make_bet_view_helpers.get_received_data(request)
+    if not received_data['success']:
+        return JsonResponse(received_data)
+
+    if not make_bet_view_helpers.exclude_bet_amount_from_card(received_data):
+        return JsonResponse({
+            "success": False,
+            "error": "Не удалось снять средства со счета"
+        })
+
+    transaction = make_bet_view_helpers.create_new_transaction(
+        request, received_data
+    )
+    if not transaction._state.db:
+        return JsonResponse({
+            "success": False,
+            "error": "Транзакция не была добавлена в базу данных"
+        })
+
+    return JsonResponse({"success": True})
