@@ -82,14 +82,6 @@ class VictoryTrueTests(VictoryTestCase):
     def test_transaction_processed_is_false(self):
         self.assertFalse(self.changed_transaction.processed)
 
-    def test_money_transfered_to_card(self):
-        self.assertEquals(
-            self.changed_card.money_amount,
-            self.old_card.money_amount + (
-                self.station.complexity * self.bet_amount
-            )
-        )
-
     def test_return_correct_data(self):
         expected_data = {"success": True}
         response_content = str(self.response.content, encoding='utf8')

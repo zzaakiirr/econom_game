@@ -65,16 +65,3 @@ def get_current_transaction(request, data):
         sender=team.id, recipient=station.id
     )
     return current_transaction
-
-
-def transfer_money_to_card(request, data):
-    team = check_card.get_team_by_card(data)
-    card = check_card.get_team_card(team)
-
-    station_admin = make_bet_view_helpers.get_station_admin(request)
-    station = station_admin.station
-
-    transaction = get_current_transaction(request, data)
-
-    card.money_amount += transaction.amount * station.complexity
-    card.save()
