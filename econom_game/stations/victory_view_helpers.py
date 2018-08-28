@@ -5,7 +5,6 @@ from accounts.models import StationAdmin
 
 from . import create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
-import teams.views_helpers as teams_views_helpers
 from . import make_bet_view_helpers
 
 
@@ -35,19 +34,9 @@ def get_error_response(data):
     card_type = data.get("card_type")
     card = data.get("card")
 
-    if not check_card.is_valid_card_type(card_type):
-        response['error'] = 'Неверный формат типа карты'
+    response = check_card.get_card_error_response(data)
 
-    elif not teams_views_helpers.is_value_string_of_positive_integers(card):
-        if card_type == 'card_number':
-            response['error'] = 'Неверный формат номера карты'
-        else:
-            response['error'] = 'Неверный формат номера чипа карты'
-
-    elif not check_card.is_card_exist(card_type, card):
-        response['error'] = 'Такой карты не существует'
-
-    elif not is_valid_victory_format(victory):
+    if not is_valid_victory_format(victory):
         response['error'] = 'Неверный формат поля победы'
 
     return response
