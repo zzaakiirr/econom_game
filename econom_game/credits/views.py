@@ -1,9 +1,11 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 from transactions.confirm_transaction_view_helpers import is_user_operator
 from . import take_credit_helpers
 
 
+@csrf_exempt
 def take_credit(request):
     if not is_user_operator(request.user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
