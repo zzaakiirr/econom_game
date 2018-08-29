@@ -14,4 +14,9 @@ urlpatterns = [
         views.get_credit_info,
         name='get_credit_info'
     ),
+    url(
+        r'^api/v1/repay_credit/$',
+        views.repay_credit,
+        name='repay_credit'
+    ),
 ]
