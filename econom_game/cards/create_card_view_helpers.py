@@ -6,7 +6,7 @@ import json
 from .models import Card
 
 import stations.create_station_view_helpers as helpers
-from teams.views_helpers import is_value_string_of_positive_integers
+from .check_card_view_helpers import is_value_string_of_positive_integers
 
 
 def get_received_data(request):

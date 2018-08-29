@@ -5,8 +5,6 @@ from teams.models import Team
 from .models import Card
 
 import stations.create_station_view_helpers as helpers
-from teams.views_helpers import is_value_string_of_positive_integers
-from teams.views_helpers import is_valid_card_type
 
 
 def get_received_data(request):
@@ -37,7 +35,7 @@ def get_error_response(data):
     return None
 
 
-def get_card_error_response(data):
+def get_card_error_response(data, check_has_card_team=True):
     response = {}
     card_type = data.get("card_type")
     card = data.get("card")
@@ -51,28 +49,45 @@ def get_card_error_response(data):
         else:
             response['error'] = 'Неверный формат номера чипа карты'
 
-    elif not is_card_exist(card_type, card):
+    elif not get_card_from_db(card_type, card):
         response['error'] = 'Такой карты не существует'
 
-    if not response:
+    if not response and check_has_card_team:
         if not get_team_by_card(data):
             response['error'] = 'У этой карты нет команды'
 
     return response
 
 
-def is_card_exist(card_type, card):
+def is_valid_card_type(received_card_type):
+    card_types = ("card_number", "chip_number")
+    for card_type in card_types:
+        if received_card_type == card_type:
+            return True
+    return False
+
+
+def is_value_string_of_positive_integers(value):
+    try:
+        int(value)
+    except ValueError:
+        return False
+    else:
+        return isinstance(value, str)
+
+
+def get_card_from_db(card_type, card):
     if card_type == 'card_number':
         try:
-            Card.objects.get(card_number=card)
+            card = Card.objects.get(card_number=card)
         except ObjectDoesNotExist:
-            return False
+            return None
     else:
         try:
-            Card.objects.get(chip_number=card)
+            card = Card.objects.get(chip_number=card)
         except ObjectDoesNotExist:
-            return False
-    return True
+            return None
+    return card
 
 
 def get_team_by_card(data):
