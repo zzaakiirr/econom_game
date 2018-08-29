@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'teams',
     'banks',
     'cards',
+    'credits',
     'transactions',
 ]
 
