@@ -42,7 +42,7 @@ def get_error_response(data, station):
     elif not is_valid_bet(bet_amount, station):
         response['error'] = 'Ставка меньше минимальной или больше максимальной'
 
-    elif not is_enough_money_on_card(data):
+    elif not is_enough_money_on_card(data, bet_amount):
         response['error'] = 'Недостаточно средств на карте'
 
     elif not is_team_for_first_time_in_station(data, station):
@@ -62,12 +62,11 @@ def is_valid_bet(bet_amount, station):
     return station.min_bet <= bet_amount <= station.max_bet
 
 
-def is_enough_money_on_card(data):
+def is_enough_money_on_card(data, money_amount):
     team = check_card.get_team_by_card(data)
-    bet_amount = data.get('bet_amount')
     if team:
         card = check_card.get_team_card(team)
-        if card.money_amount < bet_amount:
+        if card.money_amount < money_amount:
             return False
     return True
 
