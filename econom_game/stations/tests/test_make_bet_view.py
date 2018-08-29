@@ -68,8 +68,7 @@ class SuccessfulMakeBetTests(SuccessfulMakeBetTestCase):
 
     def test_return_correct_data(self):
         expected_data = {"success": True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotStationAdminMakeBetTests(TestCase):
@@ -88,8 +87,7 @@ class NotStationAdminMakeBetTests(TestCase):
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Недостаточно прав'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedOneRequiredFieldMakeBetTests(SuccessfulMakeBetTestCase):
@@ -102,8 +100,7 @@ class NotGivedOneRequiredFieldMakeBetTests(SuccessfulMakeBetTestCase):
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Поле card_type пустое'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedManyRequiredFieldsMakeBetTests(SuccessfulMakeBetTestCase):
@@ -118,8 +115,7 @@ class NotGivedManyRequiredFieldsMakeBetTests(SuccessfulMakeBetTestCase):
         expected_data = {
             'success': False, 'error': 'Поля [card_type, card] пустые'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class MakeInvalidBetForStationTests(SuccessfulMakeBetTests):
@@ -139,8 +135,7 @@ class MakeInvalidBetForStationTests(SuccessfulMakeBetTests):
             'success': False,
             'error': 'Ставка меньше минимальной или больше максимальной'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class MakeBetNotForFirstTimeInStation(SuccessfulMakeBetTestCase):
@@ -167,5 +162,4 @@ class MakeBetNotForFirstTimeInStation(SuccessfulMakeBetTestCase):
             'success': False,
             'error': 'Команда уже проходила станцию'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

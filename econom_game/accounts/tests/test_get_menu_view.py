@@ -30,8 +30,7 @@ class NotLoggedUserGetMenuTests(TestCase):
 
     def test_not_logged_user_get_menu_return_correct_data(self):
         expected_data = {"user_allowed_urls": []}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class LoggedUserGetMenuTests(TestCase):
@@ -53,8 +52,7 @@ class StationAdminGetMenuTests(LoggedUserGetMenuTests):
 
     def test_station_admin_get_menu_return_correct_data(self):
         expected_data = {"user_allowed_urls": ['/admin/station/']}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class SuperUserGetMenuTests(LoggedUserGetMenuTests):
@@ -77,5 +75,4 @@ class SuperUserGetMenuTests(LoggedUserGetMenuTests):
                 '/admin/station_transactions/',
             ]
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

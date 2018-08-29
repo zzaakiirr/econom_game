@@ -25,8 +25,7 @@ class UserNotAllowedGetBanksListTests(TestCase):
 
     def test_get_banks_list_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Недостаточно прав'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class SuperUserGetBanksListTests(SuperUserTestCase):
@@ -49,5 +48,4 @@ class SuperUserGetBanksListTests(SuperUserTestCase):
                 "credit_for_one_year": 1, "credit_for_two_years": 2
             }
         ]
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

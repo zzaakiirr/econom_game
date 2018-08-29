@@ -31,12 +31,10 @@ class IsLoggedInTrueTests(IsLoggedInTestCase):
 
     def test_is_logged_in_true_return_correct_data(self):
         expected_data = {'is_logged_in': True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class IsLoggedInFalseTests(IsLoggedInTestCase):
     def test_is_logged_in_false_return_correct_data(self):
         expected_data = {'is_logged_in': False}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

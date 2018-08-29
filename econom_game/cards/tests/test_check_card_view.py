@@ -39,8 +39,7 @@ class SuccessfulCheckCardByCardNumberTests(TestCase):
 
     def test_return_correct_data(self):
         expected_data = {"success": True, "team_name": "test"}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class SuccessfulCheckCardByChipNumberTests(
@@ -67,8 +66,7 @@ class InvalidCardTypeFormatCreateCardTests(
             'success': False,
             'error': 'Неверный формат типа карты'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidCardNumberFormatCreateCardTests(
@@ -85,8 +83,7 @@ class InvalidCardNumberFormatCreateCardTests(
             'success': False,
             'error': 'Неверный формат номера карты'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidChipNumberFormatCreateCardTests(
@@ -103,8 +100,7 @@ class InvalidChipNumberFormatCreateCardTests(
             'success': False,
             'error': 'Неверный формат номера чипа карты'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedOneRequiredFieldCreateCardTests(
@@ -118,8 +114,7 @@ class NotGivedOneRequiredFieldCreateCardTests(
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Поле card_type пустое'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedManyRequiredFieldsCreateCardTests(
@@ -135,8 +130,7 @@ class NotGivedManyRequiredFieldsCreateCardTests(
         expected_data = {
             'success': False, 'error': 'Поля [card_type, card] пустые'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class CardDoesNotHaveTeamTests(TestCase):
@@ -155,8 +149,7 @@ class CardDoesNotHaveTeamTests(TestCase):
 
     def test_return_correct_data(self):
         expected_data = {"success": False, "error": "У этой карты нет команды"}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class CardDoesNotExistTests(TestCase):
@@ -174,5 +167,4 @@ class CardDoesNotExistTests(TestCase):
         expected_data = {
             "success": False, "error": "Такой карты не существует"
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

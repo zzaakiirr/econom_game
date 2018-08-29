@@ -48,8 +48,7 @@ class SuccessfulCreateTeamTest(TestCase):
 
     def test_successful_create_team_return_correct_data(self):
         expected_data = {"success": True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidBankFormatCreateTeamTests(TestCase):
@@ -82,8 +81,7 @@ class InvalidBankFormatCreateTeamTests(TestCase):
             'success': False,
             'error': 'Неверный формат банка'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedOneRequiredFieldCreateTeamTests(
@@ -100,8 +98,7 @@ class NotGivedOneRequiredFieldCreateTeamTests(
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Поле name пустое'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedManyRequiredFieldsCreateTeamTests(
@@ -120,8 +117,7 @@ class NotGivedManyRequiredFieldsCreateTeamTests(
         expected_data = {
             'success': False, 'error': 'Поля [name, owner] пустые'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
@@ -152,8 +148,7 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
             'success': False,
             'error': 'Команда с именем "%s" уже существует' % self.name
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueCardCreateTeamTests(InvalidBankFormatCreateTeamTests):
@@ -181,8 +176,7 @@ class NotUniqueCardCreateTeamTests(InvalidBankFormatCreateTeamTests):
             'success': False,
             'error': 'Команда с такой картой уже существует'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
@@ -202,5 +196,4 @@ class BankDoesNotExistCreateTeamTests(InvalidBankFormatCreateTeamTests):
             'success': False,
             'error': 'Такого банка не существует'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

@@ -84,8 +84,7 @@ class VictoryTrueTests(VictoryTestCase):
 
     def test_return_correct_data(self):
         expected_data = {"success": True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotStationAdminVictoryTests(VictoryTestCase):
@@ -118,8 +117,7 @@ class NotStationAdminVictoryTests(VictoryTestCase):
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Недостаточно прав'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class VictoryFalseTests(VictoryTestCase):
@@ -154,5 +152,4 @@ class VictoryFalseTests(VictoryTestCase):
 
     def test_return_correct_data(self):
         expected_data = {'success': True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

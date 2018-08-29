@@ -43,8 +43,7 @@ class SuccessfulCreateCardTest(TestCase):
 
     def test_successful_create_card_return_correct_data(self):
         expected_data = {"success": True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidCardNumberFormatCreateCardTests(TestCase):
@@ -69,8 +68,7 @@ class InvalidCardNumberFormatCreateCardTests(TestCase):
             'success': False,
             'error': 'Неверный формат номера карты'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedOneRequiredFieldCreateCardTests(
@@ -84,8 +82,7 @@ class NotGivedOneRequiredFieldCreateCardTests(
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Поле card_number пустое'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedManyRequiredFieldsCreateCardTests(
@@ -101,8 +98,7 @@ class NotGivedManyRequiredFieldsCreateCardTests(
         expected_data = {
             'success': False, 'error': 'Поля [card_number, chip_number] пустые'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueCardNumberCreateCardTests(
@@ -130,8 +126,7 @@ class NotUniqueCardNumberCreateCardTests(
             'success': False,
             'error': 'Карта с номером %s уже существует' % self.card_number
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidChipNumberFormatCreateCardTest(
@@ -152,8 +147,7 @@ class InvalidChipNumberFormatCreateCardTest(
             'success': False,
             'error': 'Неверный формат номера чипа'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueChipNumberFieldCreateCardTests(
@@ -186,8 +180,7 @@ class NotUniqueChipNumberFieldCreateCardTests(
                 'Картa с номером чипа "%s" уже существует' % self.chip_number
             )
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidMoneyAmountFormatCreateCardTest(
@@ -208,5 +201,4 @@ class InvalidMoneyAmountFormatCreateCardTest(
             'success': False,
             'error': 'Неверный формат количества денег'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)

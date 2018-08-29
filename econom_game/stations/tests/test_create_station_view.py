@@ -63,8 +63,7 @@ class SuccessfulCreateStationTest(SuperUserTestCase):
 
     def test_successful_create_station_return_correct_data(self):
         expected_data = {"success": True}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidMinBetFormatCreateStationTests(SuperUserTestCase):
@@ -93,8 +92,7 @@ class InvalidMinBetFormatCreateStationTests(SuperUserTestCase):
             'success': False,
             'error': 'Неверный формат минимальной ставки'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotSuperUserCreateStationTests(InvalidMinBetFormatCreateStationTests):
@@ -110,8 +108,7 @@ class NotSuperUserCreateStationTests(InvalidMinBetFormatCreateStationTests):
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Недостаточно прав'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedOneRequiredFieldCreateStationTests(
@@ -128,8 +125,7 @@ class NotGivedOneRequiredFieldCreateStationTests(
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Поле name пустое'}
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotGivedManyRequiredFieldsCreateStationTests(
@@ -148,8 +144,7 @@ class NotGivedManyRequiredFieldsCreateStationTests(
         expected_data = {
             'success': False, 'error': 'Поля [name, min_bet] пустые'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueNameCreateStationTests(InvalidMinBetFormatCreateStationTests):
@@ -176,8 +171,7 @@ class NotUniqueNameCreateStationTests(InvalidMinBetFormatCreateStationTests):
             'success': False,
             'error': 'Станция с именем "%s" уже существует' % self.name
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidComplexityFormatCreateStationTest(
@@ -197,8 +191,7 @@ class InvalidComplexityFormatCreateStationTest(
             'success': False,
             'error': 'Неверный формат множителя'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class InvalidMaxBetFormatCreateStationTestCase(
@@ -218,8 +211,7 @@ class InvalidMaxBetFormatCreateStationTestCase(
             'success': False,
             'error': 'Неверный формат максимальной ставки'
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class MaxBetLessMinBetCreateStationTestCase(
@@ -239,8 +231,7 @@ class MaxBetLessMinBetCreateStationTestCase(
             'success': False,
             'error': "Максимальная ставка меньше минимальной ставки"
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
 
 
 class NotUniqueEmailCreateStationTests(InvalidMinBetFormatCreateStationTests):
@@ -261,5 +252,4 @@ class NotUniqueEmailCreateStationTests(InvalidMinBetFormatCreateStationTests):
             'success': False,
             'error': 'email "%s" уже занят' % self.email
         }
-        response_content = str(self.response.content, encoding='utf8')
-        self.assertJSONEqual(response_content, expected_data)
+        self.assertJSONEqual(self.response.content, expected_data)
