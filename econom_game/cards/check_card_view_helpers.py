@@ -100,7 +100,7 @@ def get_team_card(team):
 
 def get_team_card_by_card_number(team):
     try:
-        team_card = Card.objects.get(card_number=team.card)
+        team_card = Card.objects.get(card_number=team.card.card_number)
     except ObjectDoesNotExist:
         return None
     return team_card
@@ -108,7 +108,7 @@ def get_team_card_by_card_number(team):
 
 def get_team_card_by_chip_number(team):
     try:
-        team_card = Card.objects.get(chip_number=team.card)
+        team_card = Card.objects.get(chip_number=team.card.chip_number)
     except ObjectDoesNotExist:
         return None
     return team_card

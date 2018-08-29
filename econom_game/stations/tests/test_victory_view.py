@@ -24,7 +24,7 @@ class VictoryTests(TestCase):
 
 class VictoryTestCase(TestCase):
     def setUp(self):
-        Bank.objects.create(
+        self.bank = Bank.objects.create(
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
@@ -33,7 +33,7 @@ class VictoryTestCase(TestCase):
         )
         team = Team.objects.create(
             id=1, name='test', owner='test', faculty='test',
-            group='test', bank=1, card='1', card_type='card_number'
+            group='test', bank=self.bank, card=self.old_card
         )
         self.station = Station.objects.create(
             id=1, name='test', owner='test',

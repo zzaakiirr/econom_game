@@ -17,16 +17,16 @@ class CheckCardTests(TestCase):
 
 class SuccessfulCheckCardByCardNumberTests(TestCase):
     def setUp(self):
-        Bank.objects.create(
+        self.bank = Bank.objects.create(
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(
+        self.card = Card.objects.create(
             id=1, card_number='1234567890', chip_number='2', money_amount=0
         )
         Team.objects.create(
             id=1, name='test', owner='test', faculty='test',
-            group='test', bank=1, card='1234567890', card_type='card_number'
+            group='test', bank=self.bank, card=self.card
         )
         self.url = reverse("check_card")
         data = {'card_type': 'card_number', 'card': '1234567890'}
