@@ -18,7 +18,7 @@ def make_transaction(request):
 @csrf_exempt
 def confirm_transaction(request):
     user = request.user
-    if not user.is_superuser or not conform_transaction.is_user_operator(user):
+    if not user.is_superuser or not confirm_transaction.is_user_operator(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     received_data = get_received_data(request)
