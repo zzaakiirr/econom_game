@@ -2,6 +2,7 @@ from django.urls import reverse, resolve
 from django.test import TestCase
 
 from cards.models import Card
+from banks.models import Bank
 from ..models import Team
 
 from ..serializers import TeamSerializer
@@ -11,12 +12,16 @@ from ..views import ListTeamsView
 
 class GetAllTeamsTest(TestCase):
     def setUp(self):
-        Card.objects.create(
+        card = Card.objects.create(
             id=1, card_number='1', chip_number='1', money_amount=0
+        )
+        bank = Bank.objects.create(
+            id=1, name='test', deposit=0,
+            credit_for_one_year=0, credit_for_two_years=0
         )
         Team.objects.create(
             id=1, name="test", owner="test", faculty="test", group="test",
-            bank=1, card="1", card_type='card_number'
+            bank=bank, card=card
         )
         url = reverse("all_teams")
         self.response = self.client.get(url)

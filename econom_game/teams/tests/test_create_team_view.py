@@ -32,13 +32,13 @@ class SuccessfulCreateTeamTest(TestCase):
         url = reverse("create_team")
         data = {
             'name': 'test', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': '1',
-            'card_type': 'chip_number'
+            'group': 'test', 'bank': 1, 'card_type': 'chip_number',
+            'card': '1'
         }
         self.response = self.client.post(
             url, json.dumps(data), content_type="application/json"
         )
-        self.team = Team.objects.get(id=Team.objects.count())
+        self.team = Team.objects.get(id=1)
 
     def test_successul_create_team_view_success_status_code(self):
         self.assertEquals(self.response.status_code, 200)
@@ -55,11 +55,11 @@ class SuccessfulCreateTeamTest(TestCase):
 class InvalidBankFormatCreateTeamTests(TestCase):
     def setUp(self):
         self.url = reverse("create_team")
-        Bank.objects.create(
+        self.bank = Bank.objects.create(
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        Card.objects.create(
+        self.card = Card.objects.create(
             id=1, card_number='1', chip_number='1', money_amount=0
         )
         data = {
@@ -130,7 +130,7 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
         self.name = 'test'
         Team.objects.create(
             id=1, name=self.name, owner='test', faculty='test',
-            group='test', bank=1, card='1', card_type='card_number'
+            group='test', bank=self.bank, card=self.card
         )
         data = {
             'name': self.name, 'owner': 'test', 'faculty': 'test',
@@ -156,14 +156,14 @@ class NotUniqueNameCreateTeamTests(InvalidBankFormatCreateTeamTests):
 class NotUniqueCardCreateTeamTests(InvalidBankFormatCreateTeamTests):
     def setUp(self):
         super().setUp()
-        self.card = '1'
+        self.card_id = '1'
         Team.objects.create(
-            id=1, name='test_1', owner='test', faculty='test',
-            group='test', bank=1, card=self.card, card_type='card_number'
+            id=1, name='test', owner='test', faculty='test',
+            group='test', bank=self.bank, card=self.card
         )
         data = {
             'name': 'test_2', 'owner': 'test', 'faculty': 'test',
-            'group': 'test', 'bank': 1, 'card': self.card,
+            'group': 'test', 'bank': 1, 'card': self.card_id,
             'card_type': 'chip_number'
         }
         self.response = self.client.post(
@@ -176,7 +176,7 @@ class NotUniqueCardCreateTeamTests(InvalidBankFormatCreateTeamTests):
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
-            'error': 'Команда с картой "%s" уже существует' % self.card
+            'error': 'Команда с такой картой уже существует'
         }
         response_content = str(self.response.content, encoding='utf8')
         self.assertJSONEqual(response_content, expected_data)

@@ -44,8 +44,8 @@ def get_error_response(data):
     if not helpers.is_unique_field('name', name, Team):
         response['error'] = 'Команда с именем "%s" уже существует' % name
 
-    elif not helpers.is_unique_field('card', card, Team):
-        response['error'] = 'Команда с картой "%s" уже существует' % card
+    elif is_exist_team_with_same_card(card_type, card):
+        response['error'] = 'Команда с такой картой уже существует'
 
     elif not helpers.is_value_positive_integer(bank):
         response['error'] = 'Неверный формат банка'
@@ -63,6 +63,14 @@ def get_error_response(data):
         response['error'] = 'Такой карты не существует'
 
     return response
+
+
+def is_exist_team_with_same_card(card_type, card):
+    card = get_card(card_type, card)
+    for team in Team.objects.all():
+        if team.card == card:
+            return True
+    return False
 
 
 def is_object_exist(object_id, object_model):
@@ -105,9 +113,23 @@ def is_value_string_of_positive_integers(value):
 
 def create_new_team(data):
     new_team_id = Team.objects.count() + 1
+    card = get_card(data.get('card_type'), data.get('card'))
+    bank = Bank.objects.get(id=data.get('bank'))
     new_team = Team.objects.create(
         id=new_team_id, name=data.get('name'), owner=data.get('owner'),
         faculty=data.get('faculty'), group=data.get('group'),
-        bank=data.get('bank'), card=data.get('card')
+        bank=bank, card=card
     )
     return new_team
+
+
+def get_card(card_type, received_number):
+    if card_type == 'card_number':
+        for card in Card.objects.all():
+            if received_number == card.card_number:
+                return card
+    elif card_type == 'chip_number':
+        for card in Card.objects.all():
+            if received_number == card.chip_number:
+                return card
+    return None
