@@ -11,9 +11,3 @@ def get_banks_list(request):
     banks = Bank.objects.values()
     banks_list = [bank for bank in banks]
     return JsonResponse(banks_list, safe=False)
-
-
-def take_credit(request):
-    if not confirm_transaction.is_user_operator(user):
-        return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
-        
