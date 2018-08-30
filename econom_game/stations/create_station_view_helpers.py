@@ -148,4 +148,6 @@ def add_user_model_permissions_to_user(user, user_model):
 
 def create_unique_id(model):
     ids = [item.id for item in model.objects.all()]
-    return max(ids) + 1
+    if ids:
+        return max(ids) + 1
+    return 1
