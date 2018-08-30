@@ -14,4 +14,9 @@ urlpatterns = [
         views.get_deposit_info,
         name='get_deposit_info'
     ),
+    url(
+        r'^api/v1/exclude_money/$',
+        views.exclude_money,
+        name='exclude_money'
+    ),
 ]
