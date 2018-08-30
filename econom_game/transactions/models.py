@@ -5,7 +5,6 @@ from stations.models import Station
 
 
 class Transaction(models.Model):
-    id = models.PositiveIntegerField(primary_key=True, unique=True)
     sender = models.ForeignKey(
         Team, related_name='transaction_sender', default=None
     )

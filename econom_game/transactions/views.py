@@ -1,18 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-from .make_transaction_view_helpers import get_transaction_result
 from . import confirm_transaction_view_helpers
 from cards.check_card_view_helpers import get_received_data
-
-
-def make_transaction(request):
-    sender = request.GET['sender']
-    recipient = request.GET['recipient']
-    amount = int(request.GET['amount'])
-
-    transaction_result = get_transaction_result(sender, recipient, amount)
-    return JsonResponse(transaction_result)
 
 
 @csrf_exempt

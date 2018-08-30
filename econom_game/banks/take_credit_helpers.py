@@ -78,12 +78,10 @@ def is_credit_amount_less_card_half_credit_amount(data, credit_amount):
 
 
 def create_new_credit(data):
-    new_credit_id = Credit.objects.count() + 1
     team = check_card.get_team_by_card(data)
     bank = Bank.objects.get(id=team.bank)
 
     new_credit = Credit.objects.create(
-        id=new_transaction_id,
         team=team,
         bank=bank,
         debt_amount=credit_amount,

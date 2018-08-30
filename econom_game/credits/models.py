@@ -5,7 +5,6 @@ from teams.models import Team
 
 
 class Credit(models.Model):
-    id = models.PositiveIntegerField(primary_key=True, unique=True)
     team = models.ForeignKey(Team, related_name='credit_team', default=None)
     bank = models.ForeignKey(Bank, related_name='credit_bank', default=None)
     debt_amount = models.PositiveIntegerField(default=0)

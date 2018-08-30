@@ -87,15 +87,11 @@ def transfer_credit_amount_to_team_card(data):
 
 
 def create_new_credit(data):
-    new_credit_id = helpers.create_unique_id(Credit)
     team = check_card.get_team_by_card(data)
-
     new_credit = Credit.objects.create(
-        id=new_credit_id,
         team=team,
         bank=team.bank,
         debt_amount=data.get('credit_amount'),
         term=data.get('term'),
     )
-
     return new_credit

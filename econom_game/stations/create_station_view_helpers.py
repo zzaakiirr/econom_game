@@ -115,9 +115,8 @@ def is_email_in_use(email):
 
 
 def create_new_station(data):
-    new_station_id = create_unique_id(Station)
     new_station = Station.objects.create(
-        id=new_station_id, name=data.get('name'), owner=data.get('owner'),
+        name=data.get('name'), owner=data.get('owner'),
         complexity=data.get('complexity'), min_bet=data.get('min_bet'),
         max_bet=data.get('max_bet'),
     )
@@ -145,10 +144,3 @@ def add_user_model_permissions_to_user(user, user_model):
         content_type=user_model_content_type)
     for user_model_permission in user_model_permissions:
         user.user_permissions.add(user_model_permission)
-
-
-def create_unique_id(model):
-    id__max = model.objects.all().aggregate(Max('id')).get('id__max')
-    if not id__max:
-        return 1
-    return id__max + 1

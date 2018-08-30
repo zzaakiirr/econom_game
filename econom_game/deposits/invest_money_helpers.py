@@ -59,11 +59,9 @@ def decrease_team_card_money_amount_to_invest_amount(data):
 
 
 def create_new_deposit(data):
-    new_deposit_id = helpers.create_unique_id(Deposit)
     team = check_card.get_team_by_card(data)
 
     new_deposit = Deposit.objects.create(
-        id=new_deposit_id,
         team=team,
         bank=team.bank,
         invest_amount=data.get('invest_amount'),

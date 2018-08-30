@@ -92,12 +92,10 @@ def exclude_bet_amount_from_card(data):
 
 
 def create_new_transaction(request, data):
-    new_transaction_id = helpers.create_unique_id(Transaction)
     team = check_card.get_team_by_card(data)
     station = get_station_admin(request).station
 
     new_transaction = Transaction.objects.create(
-        id=new_transaction_id,
         sender=team,
         recipient=station,
         amount=data.get('bet_amount'),

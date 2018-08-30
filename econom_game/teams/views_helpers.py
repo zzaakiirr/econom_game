@@ -73,7 +73,6 @@ def is_object_exist(object_id, object_model):
 
 
 def create_new_team(data):
-    new_team_id = helpers.create_unique_id(Team)
     card = check_card.get_card_from_db(
         data.get('card_type'),
         data.get('card')
@@ -81,7 +80,7 @@ def create_new_team(data):
     bank = Bank.objects.get(id=data.get('bank'))
 
     new_team = Team.objects.create(
-        id=new_team_id, name=data.get('name'), owner=data.get('owner'),
+        name=data.get('name'), owner=data.get('owner'),
         faculty=data.get('faculty'), group=data.get('group'),
         bank=bank, card=card
     )

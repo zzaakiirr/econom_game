@@ -5,7 +5,6 @@ from cards.models import Card
 
 
 class Team(models.Model):
-    id = models.PositiveIntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=25, unique=True)
     owner = models.CharField(max_length=25)
     faculty = models.CharField(max_length=25)
