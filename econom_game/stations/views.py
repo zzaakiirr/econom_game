@@ -11,6 +11,7 @@ from .serializers import StationSerializer
 from . import create_station_view_helpers
 from . import make_bet_view_helpers
 from . import victory_view_helpers
+from .get_station_info_helpers import get_station_dict
 
 
 class ListStationsView(generics.ListAPIView):
@@ -94,3 +95,17 @@ def victory(request):
         )
 
     return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def get_station_info(request):
+    station_admin = make_bet_view_helpers.get_station_admin(request)
+    if not station_admin:
+        return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
+
+    station_dict = get_station_dict(station_admin)
+    response = {
+        'success': True,
+        'station': station_dict
+    }
+    return JsonResponse(response)

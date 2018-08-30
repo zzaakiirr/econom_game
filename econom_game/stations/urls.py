@@ -24,4 +24,9 @@ urlpatterns = [
         views.victory,
         name='victory'
     ),
+    url(
+        r'^api/v1/get_station_info/$',
+        views.get_station_info,
+        name='get_station_info'
+    ),
 ]
