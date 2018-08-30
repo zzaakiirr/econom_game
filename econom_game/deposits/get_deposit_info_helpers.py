@@ -19,7 +19,7 @@ def get_deposit_info(data):
     }
     team_deposit = get_team_deposit(team)
     if team_deposit:
-        deposit_info['invest_amount'] = team_deposit.debt_amount
+        deposit_info['invest_amount'] = team_deposit.invest_amount
     return deposit_info
 
 
