@@ -8,6 +8,7 @@ from accounts.models import StationAdmin
 
 from . import accounts_database_helpers
 
+
 User = get_user_model()
 
 
@@ -113,7 +114,7 @@ def is_email_in_use(email):
 
 
 def create_new_station(data):
-    new_station_id = Station.objects.count() + 1
+    new_station_id = create_unique_id(Station)
     new_station = Station.objects.create(
         id=new_station_id, name=data.get('name'), owner=data.get('owner'),
         complexity=data.get('complexity'), min_bet=data.get('min_bet'),
@@ -143,3 +144,21 @@ def add_user_model_permissions_to_user(user, user_model):
         content_type=user_model_content_type)
     for user_model_permission in user_model_permissions:
         user.user_permissions.add(user_model_permission)
+
+
+def create_unique_id(model):
+    new_id = model.objects.count() + 1
+    success = False
+    is_unique_id = True
+
+    while not success:
+        for model_instance in model.objects.all():
+            if new_id == model_instance.id:
+                success = False
+                is_unique_id = False
+        if is_unique_id:
+            success = True
+        else:
+            new_id += 1
+
+    return new_id

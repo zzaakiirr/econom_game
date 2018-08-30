@@ -73,7 +73,7 @@ def is_object_exist(object_id, object_model):
 
 
 def create_new_team(data):
-    new_team_id = Team.objects.count() + 1
+    new_team_id = helpers.create_unique_id(Team)
     card = check_card.get_card_from_db(
         data.get('card_type'),
         data.get('card')
