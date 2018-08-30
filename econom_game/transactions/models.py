@@ -6,8 +6,12 @@ from stations.models import Station
 
 class Transaction(models.Model):
     id = models.PositiveIntegerField(primary_key=True, unique=True)
-    sender = models.PositiveIntegerField()
-    recipient = models.PositiveIntegerField()
+    sender = models.ForeignKey(
+        Team, related_name='transaction_sender', default=None
+    )
+    recipient = models.ForeignKey(
+        Station, related_name='transaction_recipient', default=None
+    )
     amount = models.PositiveIntegerField()
     victory = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
