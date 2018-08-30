@@ -147,18 +147,5 @@ def add_user_model_permissions_to_user(user, user_model):
 
 
 def create_unique_id(model):
-    new_id = model.objects.count() + 1
-    success = False
-    is_unique_id = True
-
-    while not success:
-        for model_instance in model.objects.all():
-            if new_id == model_instance.id:
-                success = False
-                is_unique_id = False
-        if is_unique_id:
-            success = True
-        else:
-            new_id += 1
-
-    return new_id
+    ids = [item.id for item in model.objects.all()]
+    return max(ids) + 1
