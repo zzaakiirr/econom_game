@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
+from django.db.models import Max
 from django.contrib.auth import get_user_model
 import json
 
@@ -147,7 +148,7 @@ def add_user_model_permissions_to_user(user, user_model):
 
 
 def create_unique_id(model):
-    ids = [item.id for item in model.objects.all()]
-    if ids:
-        return max(ids) + 1
-    return 1
+    id__max = model.objects.all().aggregate(Max('id')).get('id__max')
+    if not id__max:
+        return 1
+    return id__max + 1
