@@ -58,6 +58,8 @@ def make_bet(request):
     if not received_data['success']:
         return JsonResponse(received_data)
 
+    make_bet_view_helpers.exclude_bet_amount_from_card(received_data)
+
     transaction = make_bet_view_helpers.create_new_transaction(
         request, received_data
     )

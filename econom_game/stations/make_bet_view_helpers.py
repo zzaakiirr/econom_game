@@ -36,7 +36,10 @@ def get_error_response(data, station):
 
     response = check_card.get_card_error_response(data)
 
-    if not helpers.is_value_positive_integer(bet_amount):
+    if not is_team_for_first_time_in_station(data, station):
+        response['error'] = 'Команда уже проходила станцию'
+
+    elif not helpers.is_value_positive_integer(bet_amount):
         response['error'] = 'Неверный формат ставки'
 
     elif not is_valid_bet(bet_amount, station):
@@ -44,9 +47,6 @@ def get_error_response(data, station):
 
     elif not is_enough_money_on_card(data, bet_amount):
         response['error'] = 'Недостаточно средств на карте'
-
-    elif not is_team_for_first_time_in_station(data, station):
-        response['error'] = 'Команда уже проходила станцию'
 
     return response
 

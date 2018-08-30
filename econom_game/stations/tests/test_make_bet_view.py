@@ -22,18 +22,18 @@ class MakeBetTests(TestCase):
         self.assertEquals(view.func, make_bet)
 
 
-class SuccessfulMakeBetTestCase(TestCase):
+class MakeBetTestCase(TestCase):
     def setUp(self):
         self.bank = Bank.objects.create(
             id=1, name='test', deposit=0,
             credit_for_one_year=0, credit_for_two_years=0
         )
-        self.card = Card.objects.create(
+        self.old_card = Card.objects.create(
             id=1, card_number='1', chip_number='1', money_amount=100
         )
         self.team = Team.objects.create(
             id=1, name='test', owner='test', faculty='test',
-            group='test', bank=self.bank, card=self.card
+            group='test', bank=self.bank, card=self.old_card
         )
         self.station = Station.objects.create(
             id=1, name='test', owner='test',
@@ -50,7 +50,7 @@ class SuccessfulMakeBetTestCase(TestCase):
         }
 
 
-class SuccessfulMakeBetTests(SuccessfulMakeBetTestCase):
+class SuccessfulMakeBetTests(MakeBetTestCase):
     def setUp(self):
         super().setUp()
         self.response = self.client.post(
@@ -59,9 +59,16 @@ class SuccessfulMakeBetTests(SuccessfulMakeBetTestCase):
         self.transaction = Transaction.objects.get(
             sender=self.team, recipient=self.station
         )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
 
     def test_success_status_code(self):
         self.assertEquals(self.response.status_code, 200)
+
+    def test_bet_amount_excluded_from_card_money_amount(self):
+        self.assertEquals(
+            self.changed_card.money_amount,
+            self.old_card.money_amount - self.data.get('bet_amount')
+        )
 
     def test_add_transaction_to_database(self):
         self.assertTrue(self.transaction._state.db)
@@ -71,54 +78,7 @@ class SuccessfulMakeBetTests(SuccessfulMakeBetTestCase):
         self.assertJSONEqual(self.response.content, expected_data)
 
 
-class NotStationAdminMakeBetTests(TestCase):
-    def setUp(self):
-        url = reverse("make_bet")
-        data = {'card_type': 'card_number', 'card': '1', 'bet_amount': 100}
-        self.response = self.client.post(
-            url, json.dumps(data), content_type="application/json"
-        )
-
-    def test_success_status_code(self):
-        self.assertEquals(self.response.status_code, 200)
-
-    def test_not_add_transaction_to_database(self):
-        self.assertEquals(Transaction.objects.count(), 0)
-
-    def test_return_correct_data(self):
-        expected_data = {'success': False, 'error': 'Недостаточно прав'}
-        self.assertJSONEqual(self.response.content, expected_data)
-
-
-class NotGivedOneRequiredFieldMakeBetTests(SuccessfulMakeBetTestCase):
-    def setUp(self):
-        super().setUp()
-        data = {'card': '1', 'bet_amount': 0}
-        self.response = self.client.post(
-            self.url, json.dumps(data), content_type="application/json"
-        )
-
-    def test_return_correct_data(self):
-        expected_data = {'success': False, 'error': 'Поле card_type пустое'}
-        self.assertJSONEqual(self.response.content, expected_data)
-
-
-class NotGivedManyRequiredFieldsMakeBetTests(SuccessfulMakeBetTestCase):
-    def setUp(self):
-        super().setUp()
-        data = {'bet_amount': 0}
-        self.response = self.client.post(
-            self.url, json.dumps(data), content_type="application/json"
-        )
-
-    def test_return_correct_data(self):
-        expected_data = {
-            'success': False, 'error': 'Поля [card_type, card] пустые'
-        }
-        self.assertJSONEqual(self.response.content, expected_data)
-
-
-class MakeInvalidBetForStationTests(SuccessfulMakeBetTests):
+class MakeInvalidBetForStationTests(MakeBetTestCase):
     def setUp(self):
         super().setUp()
         data = {
@@ -129,6 +89,19 @@ class MakeInvalidBetForStationTests(SuccessfulMakeBetTests):
         self.response = self.client.post(
             self.url, json.dumps(data), content_type="application/json"
         )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
+
+    def test_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_bet_amount_not_excluded_from_card_money_amount(self):
+        self.assertEquals(
+            self.changed_card.money_amount,
+            self.old_card.money_amount
+        )
+
+    def test_not_add_transaction_to_database(self):
+        self.assertEquals(Transaction.objects.count(), 0)
 
     def test_return_correct_data(self):
         expected_data = {
@@ -138,7 +111,54 @@ class MakeInvalidBetForStationTests(SuccessfulMakeBetTests):
         self.assertJSONEqual(self.response.content, expected_data)
 
 
-class MakeBetNotForFirstTimeInStation(SuccessfulMakeBetTestCase):
+class NotStationAdminMakeBetTests(MakeInvalidBetForStationTests):
+    def setUp(self):
+        super().setUp()
+        user = User.objects.create(email='test_2@test', password='test')
+        self.client.force_login(user)
+
+        data = {'card_type': 'card_number', 'card': '1', 'bet_amount': 100}
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
+
+    def test_return_correct_data(self):
+        expected_data = {'success': False, 'error': 'Недостаточно прав'}
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
+class NotGivedOneRequiredFieldMakeBetTests(MakeInvalidBetForStationTests):
+    def setUp(self):
+        super().setUp()
+        data = {'card': '1', 'bet_amount': 0}
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
+
+    def test_return_correct_data(self):
+        expected_data = {'success': False, 'error': 'Поле card_type пустое'}
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
+class NotGivedManyRequiredFieldsMakeBetTests(MakeInvalidBetForStationTests):
+    def setUp(self):
+        super().setUp()
+        data = {'bet_amount': 0}
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False, 'error': 'Поля [card_type, card] пустые'
+        }
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
+class MakeBetNotForFirstTimeInStation(MakeBetTestCase):
     def setUp(self):
         super().setUp()
         send_first_time_response = self.client.post(
@@ -150,12 +170,19 @@ class MakeBetNotForFirstTimeInStation(SuccessfulMakeBetTestCase):
         self.transaction = Transaction.objects.get(
             sender=self.team, recipient=self.station
         )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
 
     def test_success_status_code(self):
         self.assertEquals(self.response.status_code, 200)
 
-    def test_not_add_transaction_to_database(self):
-        self.assertTrue(self.transaction._state.db)
+    def test_bet_amount_excluded_from_card_money_amount_only_one_time(self):
+        self.assertEquals(
+            self.changed_card.money_amount,
+            self.old_card.money_amount - self.data.get('bet_amount')
+        )
+
+    def test_add_only_one_transaction_to_database(self):
+        self.assertTrue(Transaction.objects.count(), 1)
 
     def test_return_correct_data(self):
         expected_data = {
