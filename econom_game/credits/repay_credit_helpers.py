@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 import json
 
 from accounts.models import Operator
@@ -56,7 +57,10 @@ def get_error_response(data, operator):
 
 def get_team_credit(data):
     team = check_card.get_team_by_card(data)
-    team_credit = Credit.objects.get(team=team)
+    try:
+        team_credit = Credit.objects.get(team=team)
+    except ObjectDoesNotExist:
+        return None
     return team_credit
 
 
@@ -67,8 +71,8 @@ def transfer_repay_amount_to_team_credit(data):
     repay_amount = data.get('repay_amount')
 
     if repay_amount >= team_credit.debt_amount:
-        team_credit.debt_amount = 0
         team_card.money_amount -= team_credit.debt_amount
+        team_credit.debt_amount = 0
     else:
         team_credit.debt_amount -= repay_amount
         team_card.money_amount -= repay_amount
