@@ -46,7 +46,7 @@ def get_error_response(data, operator):
     if not helpers.is_value_positive_integer(credit_amount):
         response['error'] = 'Неверный формат количества денег'
 
-    elif not is_credit_bank_equal_team_bank(data, operator):
+    elif not is_operator_bank_equal_team_bank(data, operator):
         response['error'] = 'Команда прикреплена к другому банку'
 
     elif not is_team_take_credit_for_first_time(data):
@@ -58,7 +58,7 @@ def get_error_response(data, operator):
     return response
 
 
-def is_credit_bank_equal_team_bank(data, operator):
+def is_operator_bank_equal_team_bank(data, operator):
     team = check_card.get_team_by_card(data)
     return team.bank == operator.bank
 

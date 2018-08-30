@@ -43,7 +43,8 @@ def get_error_response(data, operator):
     if not get_team_credit(data):
         response['error'] = 'У команды нет кредита'
 
-    if not take_credit_helpers.is_credit_bank_equal_team_bank(data, operator):
+    if not take_credit_helpers.is_operator_bank_equal_team_bank(
+            data, operator):
         response['error'] = 'Команда прикреплена к другому банку'
 
     elif not helpers.is_value_positive_integer(repay_amount):

@@ -42,7 +42,7 @@ def get_error_response(data, operator):
     if not helpers.is_value_positive_integer(invest_amount):
         response['error'] = 'Неверный формат инвестируемой суммы'
 
-    elif not take_credit.is_credit_bank_equal_team_bank(data, operator):
+    elif not take_credit.is_operator_bank_equal_team_bank(data, operator):
         response['error'] = 'Команда прикреплена к другому банку'
 
     elif not make_bet.is_enough_money_on_card(data, invest_amount):
