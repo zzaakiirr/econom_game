@@ -57,7 +57,7 @@ class SuccessfulMakeBetTests(SuccessfulMakeBetTestCase):
             self.url, json.dumps(self.data), content_type="application/json"
         )
         self.transaction = Transaction.objects.get(
-            sender=self.team.id, recipient=self.station.id
+            sender=self.team, recipient=self.station
         )
 
     def test_success_status_code(self):
@@ -148,7 +148,7 @@ class MakeBetNotForFirstTimeInStation(SuccessfulMakeBetTestCase):
             self.url, json.dumps(self.data), content_type="application/json"
         )
         self.transaction = Transaction.objects.get(
-            sender=self.team.id, recipient=self.station.id
+            sender=self.team, recipient=self.station
         )
 
     def test_success_status_code(self):

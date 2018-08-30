@@ -76,8 +76,8 @@ def is_team_for_first_time_in_station(data, station):
     transactions = Transaction.objects.all()
     if transactions and team:
         for transaction in transactions:
-            if transaction.sender == team.id and (
-                    transaction.recipient == station.id):
+            if transaction.sender == team and (
+                    transaction.recipient == station):
                 return False
     return True
 
@@ -98,8 +98,8 @@ def create_new_transaction(request, data):
 
     new_transaction = Transaction.objects.create(
         id=new_transaction_id,
-        sender=team.id,
-        recipient=station.id,
+        sender=team,
+        recipient=station,
         amount=data.get('bet_amount'),
         victory=False,
         processed=False

@@ -62,6 +62,6 @@ def get_current_transaction(request, data):
     team = check_card.get_team_by_card(data)
     station = make_bet_view_helpers.get_station_admin(request).station
     current_transaction = Transaction.objects.get(
-        sender=team.id, recipient=station.id
+        sender=team, recipient=station
     )
     return current_transaction

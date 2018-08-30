@@ -46,8 +46,8 @@ class VictoryTestCase(TestCase):
 
         self.old_transaction = Transaction.objects.create(
             id=1,
-            sender=team.id,
-            recipient=self.station.id,
+            sender=team,
+            recipient=self.station,
             amount=self.bet_amount,
             victory=False,
             processed=False
