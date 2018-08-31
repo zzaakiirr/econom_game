@@ -5,6 +5,7 @@ from .models import Bank, Credit
 
 import stations.create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
+from credits.get_credit_info_helpers import get_team_credit
 
 
 def get_take_credit_response(request):
@@ -66,7 +67,7 @@ def get_error_response(team, team_card, credit_amount, term, operator):
     elif not is_operator_bank_equal_team_bank(team, operator):
         response['error'] = 'Команда прикреплена к другому банку'
 
-    elif not is_team_take_credit_for_first_time(team):
+    elif get_team_credit(team):
         response['error'] = 'У команды уже есть кредит'
 
     elif not is_credit_amount_less_card_half_money_amount(
@@ -78,13 +79,6 @@ def get_error_response(team, team_card, credit_amount, term, operator):
 
 def is_operator_bank_equal_team_bank(team, operator):
     return team.bank == operator.bank
-
-
-def is_team_take_credit_for_first_time(team):
-    for credit in Credit.objects.all():
-        if credit.team == team:
-            return False
-    return True
 
 
 def is_credit_amount_less_card_half_money_amount(team_card, credit_amount):
