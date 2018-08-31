@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-from transactions.confirm_transaction_view_helpers import is_user_operator
+from transactions.confirm_transaction_helpers import is_user_operator
 from cards import check_card_view_helpers as check_card
 from . import get_deposit_info_helpers, exclude_money_helpers
 from . import invest_money_helpers
