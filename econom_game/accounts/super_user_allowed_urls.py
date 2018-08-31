@@ -10,14 +10,19 @@ urlpatterns = [
         name='add_station'
     ),
     url(
-        r'^admin/add_team/$',
+        r'^admin/add_group/$',
         empty_view,
-        name='add_team'
+        name='add_group'
     ),
     url(
-        r'^admin/shares_list/$',
+        r'^admin/shares/$',
         empty_view,
-        name='view_shares_list'
+        name='view_shares'
+    ),
+    url(
+        r'^admin/give_money/$',
+        empty_view,
+        name='give_money'
     ),
     url(
         r'^admin/confirm_transaction/$',
@@ -25,28 +30,8 @@ urlpatterns = [
         name='confirm_transaction'
     ),
     url(
-        r'^admin/shadow_economy/$',
+        r'^admin/exclude_money/$',
         empty_view,
-        name='view_shadow_economy'
-    ),
-    url(
-        r'^admin/station_transactions/$',
-        empty_view,
-        name='view_station_transactions'
-    ),
-    url(
-        r'^admin/debit_list/$',
-        empty_view,
-        name='view_debit_list'
-    ),
-    url(
-        r'^admin/credit_list/$',
-        empty_view,
-        name='view_credit_list'
-    ),
-    url(
-        r'^admin/start/$',
-        empty_view,
-        name='view_start'
+        name='exclude_money'
     ),
 ]

@@ -56,36 +56,24 @@ class User(AbstractUser):
                 "Can view '/admin/add_station/' page"
             ),
             (
-                "add_team",
-                "Can view '/admin/add_team/' page"
+                "add_group",
+                "Can view '/admin/add_group/' page"
             ),
             (
-                "view_shares_list",
-                "Can view '/admin/shares_list/' page"
+                "view_shares",
+                "Can view '/admin/shares/' page"
             ),
             (
                 "confirm_transaction",
                 "Can view '/admin/confirm_transaction/' page"
             ),
             (
-                "view_shadow_economy",
-                "Can view '/admin/shadow_economy/' page"
+                "give_money",
+                "Can view '/admin/give_money/' page"
             ),
             (
-                "view_station_transactions",
-                "Can view '/admin/station_transactions/' page"
-            ),
-            (
-                "view_debit_list",
-                "Can view '/admin/debit_list/' page"
-            ),
-            (
-                "view_credit_list",
-                "Can view '/admin/credit_list/' page"
-            ),
-            (
-                "view_start",
-                "Can view '/admin/start/' page"
+                "exclude_money",
+                "Can view '/admin/exclude_money/' page"
             ),
         )
 
@@ -107,12 +95,23 @@ class Operator(models.Model):
     bank = models.ForeignKey(Bank, related_name='bank', default=None)
     user = models.OneToOneField(User)
 
+    class Meta:
+        permissions = (
+            ("view_deposit", "Can view '/admin/deposit/' page"),
+            ("view_credit", "Can view '/admin/credit/' page"),
+        )
+
     def __str__(self):
         return '%s bank operator' % self.bank.name
 
 
 class Financier(models.Model):
     user = models.OneToOneField(User)
+
+    class Meta:
+        permissions = (
+            ("view_shares", "Can view '/admin/shares/' page"),
+        )
 
     def __str__(self):
         return '%s' % self.user.first_name

@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'', include('shares.urls')),
     url(r'', include('transactions.urls')),
 
-    url(r'', include('accounts.station_admin_allowed_urls')),
     url(r'', include('accounts.super_user_allowed_urls')),
+    url(r'', include('accounts.station_admin_allowed_urls')),
+    url(r'', include('accounts.operator_allowed_urls')),
+    url(r'', include('accounts.financier_allowed_urls')),
 ]
