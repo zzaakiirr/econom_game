@@ -1,6 +1,7 @@
 import json
 
 from accounts.models import Operator
+from timings.models import Timing
 from .models import Bank, Credit
 
 import stations.create_station_view_helpers as helpers
@@ -87,11 +88,13 @@ def transfer_credit_amount_to_team_card(data):
 
 
 def create_new_credit(data):
+    current_half_year = Timing.objects.get(id=1).current_half_year
     team = check_card.get_team_by_card(data)
     new_credit = Credit.objects.create(
         team=team,
         bank=team.bank,
         debt_amount=data.get('credit_amount'),
         term=data.get('term'),
+        half_year=current_half_year
     )
     return new_credit

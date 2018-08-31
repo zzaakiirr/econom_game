@@ -1,6 +1,7 @@
 import json
 
 from accounts.models import Operator
+from timings.models import Timing
 from .models import Bank, Deposit
 
 import stations.create_station_view_helpers as helpers
@@ -60,11 +61,11 @@ def decrease_team_card_money_amount_to_invest_amount(data):
 
 def create_new_deposit(data):
     team = check_card.get_team_by_card(data)
-
+    current_half_year = Timing.objects.get(id=1).current_half_year
     new_deposit = Deposit.objects.create(
         team=team,
         bank=team.bank,
         invest_amount=data.get('invest_amount'),
+        half_year=current_half_year
     )
-
     return new_deposit
