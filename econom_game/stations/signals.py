@@ -19,6 +19,6 @@ def create_station_admin(sender, instance, created, **kwargs):
 
 def is_station_admin_already_exist(instance):
     station_admin = StationAdmin.objects.filter(station=instance)
-    if station_admin:
-        return True
-    return False
+    if len(station_admin):
+        return False
+    return True
