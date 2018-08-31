@@ -7,27 +7,9 @@ import stations.create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
 
 
-def get_received_data(request):
+def get_take_credit_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    operator = get_operator(request)
-    error_response = get_error_response(data, operator)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
-
-
-def get_operator(request):
-    for operator in Operator.objects.all():
-        if operator.user == request.user:
-            return operator
-    return None
-
-
-def get_error_response(data, operator):
     expected_fields = ('card_type', 'card', 'credit_amount', 'term')
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
@@ -41,57 +23,83 @@ def get_error_response(data, operator):
     credit_amount = data.get("credit_amount")
     term = data.get("term")
 
-    response = check_card.get_card_error_response(data)
-    if response.get('error'):
-        return response
+    card_error_response = check_card.get_card_error_response(card_type, card)
+    if card_error_response.get('error'):
+        return card_error_response
 
+    operator = get_operator(request)
+    team = check_card.get_team_by_card(card_type, card)
+    team_card = check_card.get_team_card(team)
+
+    error_response = get_error_response(
+        team, team_card,
+        credit_amount, term, operator
+    )
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    transfer_credit_amount_to_team_card(team_card, credit_amount)
+    credit = create_new_credit(team, credit_amount, term)
+    if not credit._state.db:
+        return {
+            "success": False,
+            "error": "Кредит не был добавлен в базу данных"
+        }
+
+    return {"success": True}
+
+
+def get_operator(request):
+    for operator in Operator.objects.all():
+        if operator.user == request.user:
+            return operator
+    return None
+
+
+def get_error_response(team, team_card, credit_amount, term, operator):
+    response = {}
     if not helpers.is_value_positive_integer(credit_amount):
         response['error'] = 'Неверный формат количества денег'
 
-    elif not is_operator_bank_equal_team_bank(data, operator):
+    elif not is_operator_bank_equal_team_bank(team, operator):
         response['error'] = 'Команда прикреплена к другому банку'
 
-    elif not is_team_take_credit_for_first_time(data):
+    elif not is_team_take_credit_for_first_time(team):
         response['error'] = 'У команды уже есть кредит'
 
-    elif not is_credit_amount_less_card_half_money_amount(data, credit_amount):
+    elif not is_credit_amount_less_card_half_money_amount(
+            team_card, credit_amount):
         response['error'] = 'Сумма кредита более 50% количества денег на карте'
 
     return response
 
 
-def is_operator_bank_equal_team_bank(data, operator):
-    team = check_card.get_team_by_card(data)
+def is_operator_bank_equal_team_bank(team, operator):
     return team.bank == operator.bank
 
 
-def is_team_take_credit_for_first_time(data):
-    team = check_card.get_team_by_card(data)
+def is_team_take_credit_for_first_time(team):
     for credit in Credit.objects.all():
         if credit.team == team:
             return False
     return True
 
 
-def is_credit_amount_less_card_half_money_amount(data, credit_amount):
-    team = check_card.get_team_by_card(data)
-    card = check_card.get_team_card(team)
-    return credit_amount <= card.money_amount / 2
+def is_credit_amount_less_card_half_money_amount(team_card, credit_amount):
+    return credit_amount <= team_card.money_amount / 2
 
 
-def transfer_credit_amount_to_team_card(data):
-    team = check_card.get_team_by_card(data)
-    card = check_card.get_team_card(team)
-    card.money_amount += data.get('credit_amount')
-    card.save()
+def transfer_credit_amount_to_team_card(team_card, credit_amount):
+    team_card.money_amount += credit_amount
+    team_card.save()
 
 
-def create_new_credit(data):
-    team = check_card.get_team_by_card(data)
+def create_new_credit(team, credit_amount, term):
     new_credit = Credit.objects.create(
         team=team,
         bank=team.bank,
-        debt_amount=data.get('credit_amount'),
-        term=data.get('term'),
+        debt_amount=credit_amount,
+        term=term,
     )
     return new_credit
