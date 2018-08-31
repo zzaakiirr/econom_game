@@ -11,7 +11,7 @@ class ShareRate(models.Model):
 class ShareType(models.Model):
     name = models.CharField(max_length=30, unique=True)
     amount = models.FloatField()
-    stock_price = models.ManyToManyField(ShareRate, related_name='share_type')
+    stock_price = models.ManyToManyField(ShareRate, related_name='sharetype')
 
     def __str__(self):
         return 'shareholder_%d' % self.id
@@ -20,7 +20,7 @@ class ShareType(models.Model):
 class ShareDeal(models.Model):
     team = models.ForeignKey(Team)
     sharetype = models.ForeignKey(ShareType, related_name='share_deal')
-    amount = models.FloatField()
+    amount = models.FloatField(default=0)
 
     def __str__(self):
         return 'deal%d' % self.id
