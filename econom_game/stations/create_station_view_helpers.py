@@ -44,8 +44,8 @@ def get_error_response(data):
     if not is_unique_field(field_name='name', field_value=name, model=Station):
         response['error'] = 'Станция с именем "%s" уже существует' % name
 
-    elif not is_value_positive_float(complexity):
-        response['error'] = 'Неверный формат множителя'
+    elif not complexity > 0:
+        response['error'] = "Неверный формат множителя"
 
     elif not is_value_positive_integer(min_bet):
         response['error'] = 'Неверный формат минимальной ставки'
@@ -93,10 +93,6 @@ def is_unique_field(field_name, field_value, model):
         if field_value == object_instance.get(field_name):
             return False
     return True
-
-
-def is_value_positive_float(value):
-    return isinstance(value, float) and value > 0
 
 
 def is_value_positive_integer(value):
