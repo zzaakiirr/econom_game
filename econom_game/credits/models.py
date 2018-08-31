@@ -9,6 +9,7 @@ class Credit(models.Model):
     bank = models.ForeignKey(Bank, related_name='credit_bank', default=None)
     debt_amount = models.FloatField(default=0)
     term = models.PositiveIntegerField(default=1)
+    half_year = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return 'credit_%d' % self.id
