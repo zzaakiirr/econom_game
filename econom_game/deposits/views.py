@@ -19,7 +19,9 @@ def invest_money(request):
     invest_money_helpers.decrease_team_card_money_amount_to_invest_amount(
         received_data
     )
-    deposit = invest_money_helpers.create_new_deposit(received_data)
+    deposit = invest_money_helpers.get_increased_team_deposit_or_create_new(
+        received_data
+    )
     if not deposit._state.db:
         return JsonResponse({
             "success": False,

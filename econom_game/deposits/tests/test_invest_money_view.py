@@ -69,7 +69,7 @@ class NotOperatorInvestMoneyTests(InvestMoneyTestCase):
         self.assertJSONEqual(self.response.content, expected_data)
 
 
-class SuccessfulInvestMoneyTests(InvestMoneyTestCase):
+class TeamHasNotDepositSuccessfulInvestMoneyTests(InvestMoneyTestCase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(email='test@test', password='test')
@@ -92,6 +92,39 @@ class SuccessfulInvestMoneyTests(InvestMoneyTestCase):
         )
 
     def test_add_deposit_to_database(self):
+        self.assertEquals(Deposit.objects.count(), 1)
+
+    def test_return_correct_data(self):
+        expected_data = {"success": True}
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
+class TeamHasDepositSuccessfulInvestMoneyTests(InvestMoneyTestCase):
+    def setUp(self):
+        super().setUp()
+        self.user = User.objects.create(email='test@test', password='test')
+        Operator.objects.create(user=self.user, bank=self.bank)
+        self.client.force_login(self.user)
+
+        self.response = self.client.post(
+            self.url, json.dumps(self.data), content_type="application/json"
+        )
+        self.response = self.client.post(
+            self.url, json.dumps(self.data), content_type="application/json"
+        )
+
+        self.changed_card = Card.objects.get(id=1)
+
+    def test_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_money_transfered_from_card_twice(self):
+        self.assertEquals(
+            self.changed_card.money_amount,
+            self.old_card.money_amount - self.data.get('invest_amount') * 2
+        )
+
+    def test_add_only_one_deposit_to_database(self):
         self.assertEquals(Deposit.objects.count(), 1)
 
     def test_return_correct_data(self):
