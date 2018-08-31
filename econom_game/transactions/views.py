@@ -20,9 +20,18 @@ def confirm_transaction(request):
     won_money_amount = confirm_transaction_view_helpers.get_team_won_money(
         received_data
     )
+    if not won_money_amount:
+        return JsonResponse({
+            "success": False,
+            "won_money_amount": 0,
+        })
+
     if confirm_transaction_view_helpers.transfer_won_money_to_card(
             request, received_data, won_money_amount):
-        return JsonResponse({"won_money_amount": won_money_amount})
+        return JsonResponse({
+            "success": True,
+            "won_money_amount": won_money_amount,
+        })
 
     return JsonResponse({
         "success": False,
