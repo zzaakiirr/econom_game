@@ -24,9 +24,9 @@ def get_team_won_money(data):
     team_won_money = 0
 
     for transaction in Transaction.objects.all():
-        if transaction.sender == team.id and not transaction.processed:
+        if transaction.sender == team and not transaction.processed:
             if transaction.victory:
-                station = Station.objects.get(id=transaction.recipient)
+                station = Station.objects.get(id=transaction.recipient.id)
                 team_won_money += transaction.amount * station.complexity
             transaction.processed = True
             transaction.save()

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'cards',
     'credits',
     'deposits',
+    'shares',
     'transactions',
     'timings',
 ]
