@@ -84,9 +84,6 @@ class InvalidMinBetFormatCreateStationTests(SuperUserTestCase):
     def test_do_not_add_station_to_database(self):
         self.assertEquals(Station.objects.count(), 0)
 
-    def test_do_not_add_station_admin_to_database(self):
-        self.assertEquals(StationAdmin.objects.count(), 0)
-
     def test_return_correct_data(self):
         expected_data = {
             'success': False,
