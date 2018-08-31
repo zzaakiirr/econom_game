@@ -125,8 +125,9 @@ def create_new_station(data):
 
 def create_new_station_admin(data, new_station):
     email = data.get('email')
+    password = email
 
-    user = User.objects.create_user(email=email, password=email)
+    user = User.objects.create_user(email=email, password=password)
     new_station_admin = StationAdmin.objects.create(
         station=new_station, user=user)
     accounts_database_helpers.load_account_to_db(email, password)
