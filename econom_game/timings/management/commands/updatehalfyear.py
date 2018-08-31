@@ -10,5 +10,7 @@ class Command(BaseCommand):
             timing = Timing.objects.get(id=1)
         except ObjectDoesNotExist:
             raise CommandError("No Timing object")
+        if not timing.game_started:
+            raise CommandError("Game not started")
         timing.current_half_year += 1
         timing.save()
