@@ -25,6 +25,7 @@ def get_take_credit_response(request):
 
     card_error_response = check_card.get_card_error_response(card_type, card)
     if card_error_response.get('error'):
+        card_error_response['success'] = False
         return card_error_response
 
     operator = get_operator(request)
