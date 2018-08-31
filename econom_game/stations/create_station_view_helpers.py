@@ -72,7 +72,7 @@ def get_not_recieved_fields(data, expected_fields):
 
 def get_not_received_all_expected_fields_error_response(
         not_received_fields):
-    response = {}
+    response = {'success': False}
 
     if len(not_received_fields) == 1:
         for not_received_field in not_received_fields:

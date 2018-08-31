@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 from . import confirm_transaction_view_helpers
-from cards.check_card_view_helpers import get_received_data
+# from cards.check_card_view_helpers import get_received_data
 
 
 @csrf_exempt
