@@ -7,6 +7,7 @@ import json
 from accounts.models import Operator
 from cards.models import Card
 from teams.models import Team
+from timings.models import Timing
 from ..models import Bank, Credit
 
 from ..views import take_credit
@@ -34,6 +35,7 @@ class TakeCreditTestCase(TestCase):
             id=1, name='test', owner='test', faculty='test',
             group='test', bank=self.bank, card=self.old_card
         )
+        Timing.objects.create(game_start_time='18:00:00', current_half_year=0)
 
         self.url = reverse("take_credit")
         self.data = {

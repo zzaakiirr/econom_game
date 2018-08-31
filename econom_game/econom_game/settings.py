@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'credits',
     'deposits',
     'transactions',
+    'timings',
 ]
 
 MIDDLEWARE = [
