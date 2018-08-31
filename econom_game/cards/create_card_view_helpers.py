@@ -1,6 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
-from django.core.exceptions import ObjectDoesNotExist
 import json
 
 from .models import Card
