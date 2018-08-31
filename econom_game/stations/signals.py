@@ -8,10 +8,9 @@ from accounts.models import User, StationAdmin
 @receiver(post_save, sender=Station)
 def create_station_admin(sender, instance, created, **kwargs):
     if created:
-        password = User.objects.make_random_password()
         email = 'station_admin_%d' % instance.id
 
-        user = User.objects.create(email=email, password=password)
+        user = User.objects.create(email=email, password=email)
         StationAdmin.objects.create(
             station=instance, user=user
         )
