@@ -19,10 +19,8 @@ class ShareType(models.Model):
 
 class ShareDeal(models.Model):
     team = models.ForeignKey(Team)
-    sharetype = models.ForeignKey(ShareType)
+    sharetype = models.ForeignKey(ShareType, related_name='share_deal')
     amount = models.FloatField()
-    price = models.FloatField()
-    action = models.Charfield(choices=('BUY', 'SELL'))
 
     def __str__(self):
         return 'deal%d' % self.id

@@ -10,9 +10,9 @@ urlpatterns = [
         name='exchange_rates'
     ),
     url(
-        r'^api/v1/sale_share/$',
-        views.sale_share,
-        name='sale_share'
+        r'^api/v1/sell_share/$',
+        views.sell_share,
+        name='sell_share'
     ),
     url(
         r'^api/v1/buy_share/$',

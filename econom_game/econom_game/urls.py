@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'', include('cards.urls')),
     url(r'', include('credits.urls')),
     url(r'', include('deposits.urls')),
+    url(r'', include('shares.urls')),
     url(r'', include('transactions.urls')),
 
     url(r'', include('accounts.station_admin_allowed_urls')),
