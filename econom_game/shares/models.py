@@ -5,7 +5,7 @@ from teams.models import Team
 class ShareRate(models.Model):
     sell_price = models.FloatField()
     buy_price = models.FloatField()
-    term = models.PositiveIntegerField()
+    half_year = models.PositiveIntegerField(default=1)
 
 
 class ShareType(models.Model):

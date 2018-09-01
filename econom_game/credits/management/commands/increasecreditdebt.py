@@ -3,6 +3,8 @@ from django.core.management.base import BaseCommand, CommandError
 from credits.models import Credit
 from timings.models import Timing
 
+from timings.management.commands.increasehalfyear import get_timing
+
 
 class Command(BaseCommand):
     help = 'Increase teams credit debt amount'
