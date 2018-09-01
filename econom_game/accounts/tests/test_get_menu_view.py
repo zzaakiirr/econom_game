@@ -79,6 +79,9 @@ class OperatorGetMenuTests(LoggedUserGetMenuTests):
     def test_financier_get_menu_return_correct_data(self):
         expected_data = {
             "user_allowed_urls": [
+                '/admin/add_group/',
+                '/admin/confirm_transaction/',
+                '/admin/give_money/',
                 '/admin/credit/',
                 '/admin/deposit/',
             ],
