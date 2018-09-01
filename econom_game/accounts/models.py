@@ -99,6 +99,15 @@ class Operator(models.Model):
         permissions = (
             ("view_deposit", "Can view '/admin/deposit/' page"),
             ("view_credit", "Can view '/admin/credit/' page"),
+            ("give_money", "Can view '/admin/give_money/' page"),
+            (
+                "confirm_transaction",
+                "Can view '/admin/confirm_transaction/' page"
+            ),
+            (
+                "add_group",
+                "Can view '/admin/add_group/' page"
+            ),
         )
 
     def __str__(self):
