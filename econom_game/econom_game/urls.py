@@ -5,7 +5,7 @@ from accounts import views as accounts_views
 
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin_page/', admin.site.urls),
     url(r'^api/v1/get_menu', accounts_views.get_menu, name="get_menu"),
     url(r'', include('accounts.urls')),
     url(r'', include('teams.urls')),
