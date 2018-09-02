@@ -5,8 +5,8 @@ class Station(models.Model):
     name = models.CharField(max_length=30)
     owner = models.CharField(max_length=30)
     complexity = models.FloatField()
-    min_bet = models.PositiveIntegerField()
-    max_bet = models.PositiveIntegerField()
+    min_bet = models.FloatField()
+    max_bet = models.FloatField()
 
     def __str__(self):
         return self.name

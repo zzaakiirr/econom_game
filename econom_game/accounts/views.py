@@ -1,6 +1,8 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
+
 import json
 
 from .views_helpers import get_user_allowed_urls
@@ -34,3 +36,7 @@ def is_logged_in(request):
 def get_menu(request):
     user_allowed_urls = get_user_allowed_urls(request)
     return JsonResponse({"user_allowed_urls": user_allowed_urls})
+
+
+def index_view(request):
+    return render(request, 'index.html')

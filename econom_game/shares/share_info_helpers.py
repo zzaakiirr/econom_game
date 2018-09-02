@@ -22,13 +22,13 @@ def get_share_info(data):
 
 
 def get_team_shares(team):
-    team_shares = []
-    for share_deal in ShareDeal.objects.all():
-        if share_deal.team == team:
-            share_type = share_deal.share_type
-            share = {
-                'share_name': sharetype.name,
-                'share_count': share_deal.count
-            }
-            team_shares.append(share)
+    share_deals = models.ShareDeal.objects.filter(team=team)
+    team_shares = [
+        share_type = share_deal.share_type
+        share = {
+            'share_name': sharetype.name,
+            'share_count': share_deal.count
+        }
+        for share_deal in share_deals
+    ]
     return teams_shares

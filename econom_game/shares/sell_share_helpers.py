@@ -1,36 +1,6 @@
-# def buy_share(request):
-#     user = request.user
-#     if not user.is_superuser and not is_user_financier(user):
-#         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
-#     received_data = get_received_data(request)
-#     if not received_data['success']:
-#         return JsonResponse(received_data)
-#     team = check_card.get_team_by_card(received_data)
-#     card = check_card.get_team_card(team)
-#     sharetype_to_buy = received_data["share_type"]
-#     amount_to_buy = received_data["count"]
-#     sharetype = models.ShareType.objects.filter(name=sharetype_to_buy)
-#     if not sharetype:
-#         return JsonResponse({'success': False, 'error': 'Такого типа нет'})
-#     if sharetype.amount < amount_to_buy:
-#         return JsonResponse({'success': False, 'error': 'Такого количества акций нет в наличии'})
-#     if not sharetype.stock_price:
-#         return JsonResponse({'success': False, 'error': 'У акций не заполнены расценки'})
-#     price = sharetype.stock_price.buy_price
-#     if card.money_amount < price * amount_to_buy:
-#         return JsonResponse({'success': False, 'error': 'У команды недостаточно средств'})
-#     deal = models.ShareDeal.objects.filter(team=team, sharetype=sharetype)
-#     if not deal:
-#         deal = models.ShareDeal(
-#             team=team,
-#             sharetype=sharetype,
-#             amount=amount_to_buy
-#         )
-#     else:
-#         deal.amount += amount_to_buy
-#     deal.save()
-#     card.money_amount -= price * amount_to_buy
-#     card.save()
+import json
+
+from shares import models
 
 
 def get_received_data(request):
@@ -76,7 +46,7 @@ def get_error_response(data):
         response['error'] = 'Команда не покупала таких акций'
 
     elif deal.amount < amount_to_sell:
-        response['error'] = 'Недостаточно акций'
+        response['error'] = 'У команды нет такого количества акций'
 
     elif not sharetype.stock_price:
         response['error'] = 'У акций не заполнены расценки'

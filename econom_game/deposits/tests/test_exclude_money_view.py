@@ -9,7 +9,7 @@ from cards.models import Card
 from teams.models import Team
 from ..models import Bank, Deposit
 
-from ..views import exclude_money
+from ..views import exclude_deposit_money
 
 
 User = get_user_model()
@@ -17,8 +17,8 @@ User = get_user_model()
 
 class ExcludeMoneyTests(TestCase):
     def test_make_exclude_money_url_resolves_url_deposit_view(self):
-        view = resolve('/api/v1/exclude_money/')
-        self.assertEquals(view.func, exclude_money)
+        view = resolve('/api/v1/exclude_deposit_money/')
+        self.assertEquals(view.func, exclude_deposit_money)
 
 
 class ExcludeMoneyTestCase(TestCase):
@@ -42,7 +42,7 @@ class ExcludeMoneyTestCase(TestCase):
         Operator.objects.create(user=self.user, bank=self.bank)
         self.client.force_login(self.user)
 
-        self.url = reverse("exclude_money")
+        self.url = reverse("exclude_deposit_money")
         self.data = {
             'card_type': 'card_number', 'card': '1',
             'exclude_amount': 50
@@ -159,7 +159,7 @@ class TeamHasNotDepositExcludeMoneyTests(TestCase):
             'card_type': 'card_number', 'card': '2',
             'exclude_amount': 50
         }
-        self.url = reverse('exclude_money')
+        self.url = reverse('exclude_deposit_money')
         self.response = self.client.post(
             self.url, json.dumps(self.data), content_type="application/json"
         )

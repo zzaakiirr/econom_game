@@ -11,7 +11,7 @@ class Transaction(models.Model):
     recipient = models.ForeignKey(
         Station, related_name='transaction_recipient', default=None
     )
-    amount = models.PositiveIntegerField()
+    amount = models.FloatField()
     victory = models.BooleanField(default=False)
     processed = models.BooleanField(default=False)
 

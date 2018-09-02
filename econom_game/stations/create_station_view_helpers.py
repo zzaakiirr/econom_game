@@ -44,8 +44,8 @@ def get_error_response(data):
     if not is_unique_field(field_name='name', field_value=name, model=Station):
         response['error'] = 'Станция с именем "%s" уже существует' % name
 
-    elif not is_value_positive_float(complexity):
-        response['error'] = 'Неверный формат множителя'
+    elif not complexity > 0:
+        response['error'] = "Неверный формат множителя"
 
     elif not is_value_positive_integer(min_bet):
         response['error'] = 'Неверный формат минимальной ставки'
@@ -95,10 +95,6 @@ def is_unique_field(field_name, field_value, model):
     return True
 
 
-def is_value_positive_float(value):
-    return isinstance(value, float) and value > 0
-
-
 def is_value_positive_integer(value):
     return isinstance(value, int) and value >= 0
 
@@ -124,13 +120,10 @@ def create_new_station(data):
 
 
 def create_new_station_admin(data, new_station):
-    password = User.objects.make_random_password()
     email = data.get('email')
+    password = email
 
-    user = User.objects.create_user(
-        email=email, password=password,
-        first_name=data.get('name')
-    )
+    user = User.objects.create_user(email=email, password=password)
     new_station_admin = StationAdmin.objects.create(
         station=new_station, user=user)
     accounts_database_helpers.load_account_to_db(email, password)

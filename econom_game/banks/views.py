@@ -5,7 +5,8 @@ from transactions.confirm_transaction_helpers import is_user_operator
 
 
 def get_banks_list(request):
-    if not request.user.is_superuser:
+    user = request.user
+    if not user.is_superuser and not is_user_operator(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     banks = Bank.objects.values()

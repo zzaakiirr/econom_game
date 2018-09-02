@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import User, StationAdmin, Financier, Operator
+from .models import User, StationAdmin, Operator, Financier
 
 
 admin.site.register(StationAdmin)
-# admin.site.register(Financier, Operator)
+admin.site.register(Operator)
+admin.site.register(Financier)
 
 
 @admin.register(User)

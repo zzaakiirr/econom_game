@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.urls import resolve
 import json
 
-from accounts.models import User, StationAdmin
+from accounts.models import User, StationAdmin, Financier, Operator
 
 from ..views import get_menu
 
@@ -55,6 +55,40 @@ class StationAdminGetMenuTests(LoggedUserGetMenuTests):
         self.assertJSONEqual(self.response.content, expected_data)
 
 
+class FinancierGetMenuTests(LoggedUserGetMenuTests):
+    def setUp(self):
+        super().setUp()
+        helpers.add_user_model_permissions_to_user(self.user, Financier)
+        self.response = self.client.get(self.url)
+
+    def test_financier_get_menu_return_correct_data(self):
+        expected_data = {
+            "user_allowed_urls": [
+                '/admin/shares/',
+            ],
+        }
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
+class OperatorGetMenuTests(LoggedUserGetMenuTests):
+    def setUp(self):
+        super().setUp()
+        helpers.add_user_model_permissions_to_user(self.user, Operator)
+        self.response = self.client.get(self.url)
+
+    def test_financier_get_menu_return_correct_data(self):
+        expected_data = {
+            "user_allowed_urls": [
+                '/admin/add_group/',
+                '/admin/confirm_transaction/',
+                '/admin/give_money/',
+                '/admin/credit/',
+                '/admin/deposit/',
+            ],
+        }
+        self.assertJSONEqual(self.response.content, expected_data)
+
+
 class SuperUserGetMenuTests(LoggedUserGetMenuTests):
     def setUp(self):
         super().setUp()
@@ -64,15 +98,12 @@ class SuperUserGetMenuTests(LoggedUserGetMenuTests):
     def test_super_user_get_menu_return_correct_data(self):
         expected_data = {
             "user_allowed_urls": [
+                '/admin/add_group/',
                 '/admin/add_station/',
-                '/admin/add_team/',
                 '/admin/confirm_transaction/',
-                '/admin/credit_list/',
-                '/admin/debit_list/',
-                '/admin/shadow_economy/',
-                '/admin/shares_list/',
-                '/admin/start/',
-                '/admin/station_transactions/',
+                '/admin/exclude_money/',
+                '/admin/give_money/',
+                '/admin/shares/',
             ]
         }
         self.assertJSONEqual(self.response.content, expected_data)
