@@ -3,10 +3,10 @@ from django.http import JsonResponse
 
 from transactions.confirm_transaction_helpers import is_user_operator
 from cards import check_card_view_helpers as check_card
-from . import get_deposit_info_helpers, exclude_money_helpers
 from . import invest_money_helpers
 
-from deposits.get_deposit_info_helpers import get_deposit_info_response
+from .get_deposit_info_helpers import get_deposit_info_response
+from .exclude_deposit_money_helpers import get_exclude_deposit_money_response
 
 
 @csrf_exempt
@@ -48,9 +48,5 @@ def exclude_deposit_money(request):
     if not is_user_operator(request.user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = exclude_money_helpers.get_received_data(request)
-    if not received_data['success']:
-        return JsonResponse(received_data)
-
-    exclude_money_helpers.transfer_exclude_amount_to_team_card(received_data)
-    return JsonResponse({"success": True})
+    response = get_exclude_deposit_money_response(request)
+    return JsonResponse(response)
