@@ -5,8 +5,7 @@ from accounts import views as accounts_views
 
 
 urlpatterns = [
-    url(r'^admin_page/', admin.site.urls),
-    url(r'^api/v1/get_menu', accounts_views.get_menu, name="get_menu"),
+    url(r'^django_admin/', admin.site.urls),
     url(r'', include('accounts.urls')),
     url(r'', include('teams.urls')),
     url(r'', include('stations.urls')),
@@ -21,4 +20,8 @@ urlpatterns = [
     url(r'', include('accounts.station_admin_allowed_urls')),
     url(r'', include('accounts.operator_allowed_urls')),
     url(r'', include('accounts.financier_allowed_urls')),
+]
+
+urlpatterns += [
+    url(r'^.*/$', accounts_views.index_view, name='index_view'),
 ]

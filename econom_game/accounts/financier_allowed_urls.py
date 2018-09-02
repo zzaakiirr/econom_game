@@ -1,8 +1,8 @@
 from django.conf.urls import include, url
 
-from .empty_view import empty_view
+from accounts.views import index_view
 
 
 urlpatterns = [
-    url(r"^admin/shares/$", empty_view, name='view_shares'),
+    url(r"^admin/shares/$", index_view, name='view_shares'),
 ]
