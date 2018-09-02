@@ -46,7 +46,7 @@ def get_deposit_info(request):
 
 
 @csrf_exempt
-def exclude_money(request):
+def exclude_deposit_money(request):
     if not is_user_operator(request.user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
