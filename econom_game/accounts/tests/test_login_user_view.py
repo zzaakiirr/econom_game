@@ -16,7 +16,7 @@ class LoginTests(TestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_login_url_resolves_login_view(self):
-        view = resolve('/login/')
+        view = resolve('/api/v1/login/')
         self.assertEquals(view.func, login_user)
 
 
