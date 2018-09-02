@@ -62,8 +62,7 @@ def is_valid_bet(bet_amount, station):
     return station.min_bet <= bet_amount <= station.max_bet
 
 
-def is_enough_money_on_card(data, money_amount):
-    team = check_card.get_team_by_card(data)
+def is_enough_money_on_card(team, money_amount):
     if team:
         card = check_card.get_team_card(team)
         if card.money_amount < money_amount:
