@@ -13,19 +13,9 @@ from . import accounts_database_helpers
 User = get_user_model()
 
 
-def get_received_data(request):
+def get_create_station_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    error_response = get_error_response(data)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
-
-
-def get_error_response(data):
     expected_fields = (
         "name", "complexity", "min_bet", "max_bet", "email", "owner"
     )
@@ -34,12 +24,43 @@ def get_error_response(data):
         return get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
-    response = {}
     name = data.get("name")
+    owner = data.get("owner")
     complexity = data.get("complexity")
     min_bet = data.get("min_bet")
     max_bet = data.get("max_bet")
     email = data.get("email")
+
+    error_response = get_error_response(
+        name, complexity, min_bet, max_bet, email
+    )
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    new_station = create_new_station(name, owner, complexity, min_bet, max_bet)
+    if not new_station._state.db:
+        return {
+            "success": False,
+            "error": "Станция не была добавлена в базу данных"
+        }
+
+    new_station_admin = create_new_station_admin(email, new_station)
+    if not new_station_admin._state.db:
+        return {
+            "success": False,
+            "error": "Держатель станции не был добавлен в базу данных"
+        }
+
+    add_user_model_permissions_to_user(
+        user=new_station_admin.user,
+        user_model=StationAdmin
+    )
+    return {"success": True}
+
+
+def get_error_response(name, complexity, min_bet, max_bet, email):
+    response = {}
 
     if not is_unique_field(field_name='name', field_value=name, model=Station):
         response['error'] = 'Станция с именем "%s" уже существует' % name
@@ -110,30 +131,27 @@ def is_email_in_use(email):
     return False
 
 
-def create_new_station(data):
+def create_new_station(name, owner, complexity, min_bet, max_bet):
     new_station = Station.objects.create(
-        name=data.get('name'), owner=data.get('owner'),
-        complexity=data.get('complexity'), min_bet=data.get('min_bet'),
-        max_bet=data.get('max_bet'),
+        name=name, owner=owner,
+        complexity=complexity, min_bet=min_bet, max_bet=max_bet,
     )
     return new_station
 
 
-def create_new_station_admin(data, new_station):
-    email = data.get('email')
-    password = email
-
-    user = User.objects.create_user(email=email, password=password)
+def create_new_station_admin(email, new_station):
+    user = User.objects.create_user(email=email, password=email)
     new_station_admin = StationAdmin.objects.create(
-        station=new_station, user=user)
-    accounts_database_helpers.load_account_to_db(email, password)
-
+        station=new_station, user=user
+    )
+    accounts_database_helpers.load_account_to_db(email=email, password=email)
     return new_station_admin
 
 
 def add_user_model_permissions_to_user(user, user_model):
     user_model_content_type = ContentType.objects.get_for_model(user_model)
     user_model_permissions = Permission.objects.filter(
-        content_type=user_model_content_type)
+        content_type=user_model_content_type
+    )
     for user_model_permission in user_model_permissions:
         user.user_permissions.add(user_model_permission)
