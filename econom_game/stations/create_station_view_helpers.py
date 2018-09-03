@@ -13,7 +13,7 @@ from . import accounts_database_helpers
 User = get_user_model()
 
 
-def get_create_station_response(request):
+def fetch_create_station_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = (

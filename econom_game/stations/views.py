@@ -8,10 +8,10 @@ from .models import Station
 
 from .serializers import StationSerializer
 
-from . import make_bet_view_helpers
 from . import victory_view_helpers
 from .get_station_info_helpers import get_station_dict
-from .create_station_view_helpers import get_create_station_response
+from .create_station_view_helpers import fetch_create_station_response
+from .make_bet_view_helpers import fetch_make_bet_response, get_station_admin
 
 
 class ListStationsView(generics.ListAPIView):
@@ -24,36 +24,22 @@ def create_station(request):
     if not request.user.is_superuser:
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    response = get_create_station_response(request)
+    response = fetch_create_station_response(request)
     return JsonResponse(response)
 
 
 @csrf_exempt
 def make_bet(request):
-    if not make_bet_view_helpers.get_station_admin(request):
+    if not get_station_admin(request):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = make_bet_view_helpers.get_received_data(request)
-    if not received_data['success']:
-        return JsonResponse(received_data)
-
-    make_bet_view_helpers.exclude_bet_amount_from_card(received_data)
-
-    transaction = make_bet_view_helpers.create_new_transaction(
-        request, received_data
-    )
-    if not transaction._state.db:
-        return JsonResponse({
-            "success": False,
-            "error": "Транзакция не была добавлена в базу данных"
-        })
-
-    return JsonResponse({"success": True})
+    response = fetch_make_bet_response(request)
+    return JsonResponse(response)
 
 
 @csrf_exempt
 def victory(request):
-    if not make_bet_view_helpers.get_station_admin(request):
+    if not get_station_admin(request):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     received_data = victory_view_helpers.get_received_data(request)
@@ -80,7 +66,7 @@ def victory(request):
 
 @csrf_exempt
 def get_station_info(request):
-    station_admin = make_bet_view_helpers.get_station_admin(request)
+    station_admin = get_station_admin(request)
     if not station_admin:
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
