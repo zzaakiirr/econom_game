@@ -22,16 +22,16 @@ urlpatterns = [
     url(
         r'^admin/give_money/$',
         index_view,
-        name='give_money'
+        name='view_give_money'
     ),
     url(
         r'^admin/confirm_transaction/$',
         index_view,
-        name='confirm_transaction'
+        name='view_confirm_transaction'
     ),
     url(
         r'^admin/exclude_money/$',
         index_view,
-        name='exclude_money'
+        name='view_exclude_money'
     ),
 ]

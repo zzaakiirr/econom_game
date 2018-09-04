@@ -64,15 +64,15 @@ class User(AbstractUser):
                 "Can view '/admin/shares/' page"
             ),
             (
-                "confirm_transaction",
+                "view_confirm_transaction",
                 "Can view '/admin/confirm_transaction/' page"
             ),
             (
-                "give_money",
+                "view_give_money",
                 "Can view '/admin/give_money/' page"
             ),
             (
-                "exclude_money",
+                "view_exclude_money",
                 "Can view '/admin/exclude_money/' page"
             ),
         )
@@ -99,9 +99,9 @@ class Operator(models.Model):
         permissions = (
             ("view_deposit", "Can view '/admin/deposit/' page"),
             ("view_credit", "Can view '/admin/credit/' page"),
-            ("give_money", "Can view '/admin/give_money/' page"),
+            ("view_give_money", "Can view '/admin/give_money/' page"),
             (
-                "confirm_transaction",
+                "view_confirm_transaction",
                 "Can view '/admin/confirm_transaction/' page"
             ),
             (

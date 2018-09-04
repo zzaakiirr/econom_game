@@ -76,14 +76,14 @@ class OperatorGetMenuTests(LoggedUserGetMenuTests):
         helpers.add_user_model_permissions_to_user(self.user, Operator)
         self.response = self.client.get(self.url)
 
-    def test_financier_get_menu_return_correct_data(self):
+    def test_operator_get_menu_return_correct_data(self):
         expected_data = {
             "user_allowed_urls": [
                 '/admin/add_group/',
                 '/admin/confirm_transaction/',
-                '/admin/give_money/',
                 '/admin/credit/',
                 '/admin/deposit/',
+                '/admin/give_money/',
             ],
         }
         self.assertJSONEqual(self.response.content, expected_data)
