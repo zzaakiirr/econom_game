@@ -10,7 +10,7 @@ import cards.check_card_view_helpers as check_card
 from . import take_credit_helpers
 
 
-def get_repay_credit_response(request):
+def fetch_repay_credit_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ('card_type', 'card', 'repay_amount')

@@ -6,7 +6,7 @@ import cards.check_card_view_helpers as check_card
 import stations.create_station_view_helpers as helpers
 
 
-def get_credit_info_response(request):
+def fetch_credit_info_response(request):
     data = json.loads(request.body.decode("utf-8"))
     card_type = data.get("card_type")
     card = data.get("card")

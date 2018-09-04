@@ -9,7 +9,7 @@ import cards.check_card_view_helpers as check_card
 from credits.get_credit_info_helpers import get_team_credit
 
 
-def get_take_credit_response(request):
+def fetch_take_credit_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ('card_type', 'card', 'credit_amount', 'term')
