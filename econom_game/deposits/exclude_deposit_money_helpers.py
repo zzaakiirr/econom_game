@@ -10,7 +10,7 @@ import cards.check_card_view_helpers as check_card
 from credits import take_credit_helpers
 
 
-def get_exclude_deposit_money_response(request):
+def fetch_exclude_deposit_money_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ('card_type', 'card', 'exclude_amount')

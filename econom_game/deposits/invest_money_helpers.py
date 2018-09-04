@@ -12,7 +12,7 @@ import stations.make_bet_view_helpers as make_bet
 from .get_deposit_info_helpers import get_team_deposit
 
 
-def get_invest_money_response(request):
+def fetch_invest_money_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ('card_type', 'card', 'invest_amount')
