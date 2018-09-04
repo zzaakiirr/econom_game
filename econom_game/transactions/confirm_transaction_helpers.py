@@ -9,7 +9,7 @@ import cards.check_card_view_helpers as check_card
 from stations import make_bet_view_helpers
 
 
-def get_confirm_transaction_response(request):
+def fetch_confirm_transaction_response(request):
     check_card_response = check_card.get_check_card_response(request)
     if not check_card_response.get('success'):
         return check_card_response

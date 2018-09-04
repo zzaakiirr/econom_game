@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 from .confirm_transaction_helpers import is_user_operator
-from .confirm_transaction_helpers import get_confirm_transaction_response
+from .confirm_transaction_helpers import fetch_confirm_transaction_response
 from transactions.money_transfer_helpers import get_money_transfer_response
 
 
@@ -12,7 +12,7 @@ def confirm_transaction(request):
     if not user.is_superuser and not is_user_operator(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    response = get_confirm_transaction_response(request)
+    response = fetch_confirm_transaction_response(request)
     return JsonResponse(response)
 
 
