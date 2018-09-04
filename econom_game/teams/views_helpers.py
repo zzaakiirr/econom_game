@@ -9,7 +9,7 @@ import stations.create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
 
 
-def get_create_team_response(request):
+def fetch_create_team_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = (
