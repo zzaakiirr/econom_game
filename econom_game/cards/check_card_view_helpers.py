@@ -7,7 +7,7 @@ from .models import Card
 import stations.create_station_view_helpers as helpers
 
 
-def get_check_card_response(request):
+def fetch_check_card_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ("card_type", "card")

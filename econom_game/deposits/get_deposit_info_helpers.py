@@ -6,7 +6,7 @@ import cards.check_card_view_helpers as check_card
 
 
 def get_deposit_info_response(request):
-    check_card_response = check_card.get_check_card_response(request)
+    check_card_response = check_card.fetch_check_card_response(request)
     if not check_card_response.get('success'):
         return check_card_response
 

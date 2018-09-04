@@ -6,7 +6,7 @@ import stations.create_station_view_helpers as helpers
 from .check_card_view_helpers import is_value_string_of_positive_integers
 
 
-def get_create_card_response(request):
+def fetch_create_card_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
     expected_fields = ("card_number", "chip_number", "money_amount")
