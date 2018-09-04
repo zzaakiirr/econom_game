@@ -1,23 +1,14 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-from rest_framework import generics
-
 from accounts.models import StationAdmin
 from stations.models import Station
-
-from .serializers import StationSerializer
 
 from . import victory_view_helpers
 from .get_station_info_helpers import get_station_dict
 from .create_station_view_helpers import fetch_create_station_response
 from .make_bet_view_helpers import fetch_make_bet_response, get_station_admin
 from .victory_view_helpers import fetch_victory_response
-
-
-class ListStationsView(generics.ListAPIView):
-    queryset = Station.objects.all()
-    serializer_class = StationSerializer
 
 
 @csrf_exempt
