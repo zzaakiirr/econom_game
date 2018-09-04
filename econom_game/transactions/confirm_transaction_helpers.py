@@ -1,12 +1,10 @@
-import json
-
-from transactions.models import Transaction
 from accounts.models import Operator
 from stations.models import Station
+from transactions.models import Transaction
 
-import stations.create_station_view_helpers as helpers
+import json
+
 import cards.check_card_view_helpers as check_card
-from stations import make_bet_view_helpers
 
 
 def fetch_confirm_transaction_response(request):
@@ -14,8 +12,12 @@ def fetch_confirm_transaction_response(request):
     if not check_card_response.get('success'):
         return check_card_response
 
-    team = check_card.get_team_by_card(data)
-    card = check_card.get_team_card(team)
+    data = json.loads(request.body.decode("utf-8"))
+    card_type = data.get('card_type')
+    card = data.get('card')
+
+    team = check_card.get_team_by_card(card_type, card)
+    team_card = check_card.get_team_card(team)
 
     won_money_amount = get_team_won_money(team)
     if not won_money_amount:
@@ -24,7 +26,7 @@ def fetch_confirm_transaction_response(request):
             'won_money_amount': 0
         }
 
-    transfer_won_money_to_card(card, won_money_amount)
+    transfer_won_money_to_card(team_card, won_money_amount)
     return {
         'success': True,
         'won_money_amount': won_money_amount
@@ -33,26 +35,25 @@ def fetch_confirm_transaction_response(request):
 
 def is_user_operator(user):
     operators = Operator.objects.all()
-    if operators:
-        for operator in operators:
-            if user == operator.user:
-                return True
-    return False
+    return user in [operator.user for operator in operators]
 
 
 def get_team_won_money(team):
-    team_won_money = 0
-    for transaction in Transaction.objects.all():
-        if transaction.sender == team and not transaction.processed:
-            if transaction.victory:
-                station = Station.objects.get(id=transaction.recipient.id)
-                team_won_money += transaction.amount * station.complexity
-            transaction.processed = True
-            transaction.save()
+    won_money_amount = 0
+    team_transactions_with_station = Transaction.objects.filter(
+        sender=team, processed=False
+    )
 
-    return team_won_money
+    for transaction in team_transactions_with_station:
+        if transaction.victory:
+            station = transaction.recipient
+            won_money_amount += transaction.amount * station.complexity
+        transaction.processed = True
+        transaction.save()
+
+    return won_money_amount
 
 
-def transfer_won_money_to_card(card, won_money):
-    card.money_amount += won_money
-    card.save()
+def transfer_won_money_to_card(team_card, won_money_amount):
+    team_card.money_amount += won_money_amount
+    team_card.save()
