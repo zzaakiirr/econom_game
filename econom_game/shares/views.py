@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 from shares.views_helpers import is_user_financier
-from .get_exchange_rates_helpers import get_exchange_rates
+from .exchange_rates_helpers import get_exchange_rates
 from .sell_share_helpers import fetch_sell_share_response
 from .buy_share_helpers import fetch_buy_share_response
 from .share_info_helpers import fetch_share_info_response
@@ -15,7 +15,7 @@ def exchange_rates(request):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     serialized_rates = get_exchange_rates()
-    return JsonResponse(serialized_rates)
+    return JsonResponse(serialized_rates, safe=False)
 
 
 @csrf_exempt
