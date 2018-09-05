@@ -25,7 +25,7 @@ def get_team_shares(team):
     share_deals = models.ShareDeal.objects.filter(team=team)
     team_shares = [
         {
-            "share_name": share_deal.sharetype.name,
+            "share_name": share_deal.share_type.name,
             "share_count": shae_deal.amount,
         }
         for share_deal in share_deals
