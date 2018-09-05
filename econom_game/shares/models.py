@@ -7,6 +7,9 @@ class ShareRate(models.Model):
     buy_price = models.FloatField()
     half_year = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return 'share_rate_%d' % self.id
+
 
 class ShareType(models.Model):
     name = models.CharField(max_length=30, unique=True)
