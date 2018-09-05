@@ -19,8 +19,8 @@ class ShareType(models.Model):
 
 class ShareDeal(models.Model):
     team = models.ForeignKey(Team)
-    sharetype = models.ForeignKey(ShareType, related_name='share_deal')
+    share_type = models.ForeignKey(ShareType, related_name='share_deal')
     amount = models.FloatField(default=0)
 
     def __str__(self):
-        return 'deal%d' % self.id
+        return 'deal_%d' % self.id

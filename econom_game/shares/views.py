@@ -1,10 +1,11 @@
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-from shares import models
+from django.http import JsonResponse
 
 from shares.views_helpers import is_user_financier
-import cards.check_card_view_helpers as check_card
+from .get_exchange_rates_helpers import get_exchange_rates
+from .sell_share_helpers import fetch_sell_share_response
+from .buy_share_helpers import fetch_buy_share_response
+from .share_info_helpers import fetch_share_info_response
 
 
 @csrf_exempt
@@ -23,11 +24,7 @@ def share_info(request):
     if not user.is_superuser and not is_user_financier(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = check_card.get_received_data(request)
-    if not received_data['success']:
-        return JsonResponse(received_data)
-
-    response = get_share_info(received_data)
+    response = fetch_share_info_response(request)
     return JsonResponse(response)
 
 
@@ -37,13 +34,8 @@ def sell_share(request):
     if not user.is_superuser and not is_user_financier(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = sell_share_helpers.get_received_data(request)
-    if not received_data['success']:
-        return JsonResponse(received_data)
-
-    sell_share_helpers.transfer_money_from_sold_shares_to_card(received_data)
-    sell_share_helpers.decrease_deal_sharetype_amount(received_data)
-    return JsonResponse({'success': True})
+    response = fetch_sell_share_response(request)
+    return jsonresponse(response)
 
 
 @csrf_exempt
@@ -52,11 +44,5 @@ def buy_share(request):
     if not user.is_superuser and not is_user_financier(user):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
-    received_data = check_card.get_received_data(request)
-    if not received_data['success']:
-        return JsonResponse(received_data)
-
-    buy_share_helpers.decrease_card_money_amount_to_buyed_shares(received_data)
-    buy_share_helpers.create_new_deal(received_data)
-
-    return JsonResponse({'success': True})
+    response = fetch_buy_share_response(request)
+    return jsonresponse(response)
