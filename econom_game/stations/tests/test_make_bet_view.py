@@ -190,3 +190,23 @@ class MakeBetNotForFirstTimeInStation(MakeBetTestCase):
             'error': 'Команда уже проходила станцию'
         }
         self.assertJSONEqual(self.response.content, expected_data)
+
+
+class NotEnoughMoneyOnCardMakeBetTests(MakeInvalidBetForStationTests):
+    def setUp(self):
+        super().setUp()
+        self.old_card.money_amount = 0
+        self.old_card.save()
+
+        data = {'card_type': 'card_number', 'card': '1', 'bet_amount': 100}
+        self.response = self.client.post(
+            self.url, json.dumps(data), content_type="application/json"
+        )
+        self.changed_card = Card.objects.get(id=self.old_card.id)
+
+    def test_return_correct_data(self):
+        expected_data = {
+            'success': False,
+            'error': 'Недостаточно средств на карте'
+        }
+        self.assertJSONEqual(self.response.content, expected_data)
