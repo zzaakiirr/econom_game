@@ -35,7 +35,7 @@ def sell_share(request):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     response = fetch_sell_share_response(request)
-    return jsonresponse(response)
+    return JsonResponse(response)
 
 
 @csrf_exempt
@@ -45,4 +45,4 @@ def buy_share(request):
         return JsonResponse({'success': False, 'error': 'Недостаточно прав'})
 
     response = fetch_buy_share_response(request)
-    return jsonresponse(response)
+    return JsonResponse(response)
