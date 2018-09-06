@@ -42,9 +42,9 @@ def fetch_exclude_deposit_money_response(request):
         error_response['success'] = False
         return error_response
 
-    transfer_exclude_amount_to_team_card(
-        team_card, team_deposit, exclude_amount
-    )
+    increase_card_money_amount_to_exclude_amount(team_card, exclude_amount)
+    decrease_deposit_invest_amount_to_exclude_amount(
+        team_deposit, exclude_amount)
     return {"success": True}
 
 
@@ -80,9 +80,12 @@ def is_exclude_amount_less_deposit_invest_amount(team_deposit, exclude_amount):
     return exclude_amount <= team_deposit.invest_amount
 
 
-def transfer_exclude_amount_to_team_card(
-        team_card, team_deposit, exclude_amount):
+def increase_card_money_amount_to_exclude_amount(team_card, exclude_amount):
     team_card.money_amount += exclude_amount
     team_card.save()
+
+
+def decrease_deposit_invest_amount_to_exclude_amount(
+        team_deposit, exclude_amount):
     team_deposit.invest_amount -= exclude_amount
     team_deposit.save()
