@@ -8,7 +8,7 @@ class Deposit(models.Model):
     team = models.ForeignKey(Team, related_name='deposit_team', default=None)
     bank = models.ForeignKey(Bank, related_name='deposit_bank', default=None)
     invest_amount = models.FloatField(default=0)
-    last_change = models.TimeField(auto_now_add=True)
+    last_change = models.TimeField(auto_now=True)
     half_year = models.PositiveIntegerField(default=0)
 
     def __str__(self):
