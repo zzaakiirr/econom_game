@@ -45,6 +45,7 @@ def get_credit_info(card_type, card):
         credit_info['team_credit'] = {
             'debt_amount': team_credit.debt_amount,
             'term': team_credit.term,
+            'last_change': team_credit.last_change
         }
     return credit_info
 

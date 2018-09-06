@@ -73,7 +73,7 @@ class TeamHasCreditGetCreditInfoTests(GetCreditInfoTestCase):
     def setUp(self):
         super().setUp()
         self.credit = Credit.objects.create(
-            id=1, team=self.team, bank=self.bank, debt_amount=100, term=1
+            id=1, team=self.team, bank=self.bank, debt_amount=100.0, term=1
         )
         self.user = User.objects.create(email='test@test', password='test')
         Operator.objects.create(user=self.user, bank=self.bank)
@@ -89,12 +89,13 @@ class TeamHasCreditGetCreditInfoTests(GetCreditInfoTestCase):
     def test_return_correct_data(self):
         self.expected_data['team_credit'] = {
             'debt_amount': self.credit.debt_amount,
+            'last_change': str(self.credit.last_change)[:-3],
             'term': self.credit.term,
         }
         self.assertJSONEqual(self.response.content, self.expected_data)
 
 
-class TeamHasCreditGetCreditInfoTests(GetCreditInfoTestCase):
+class TeamHasNotCreditGetCreditInfoTests(GetCreditInfoTestCase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(email='test@test', password='test')
