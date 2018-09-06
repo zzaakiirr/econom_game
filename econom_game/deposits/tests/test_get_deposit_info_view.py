@@ -47,7 +47,7 @@ class GetDepositInfoTestCase(TestCase):
                 'bank_id': self.bank.id,
                 'bank_name': self.bank.name
             },
-            'invest_amount': None,
+            'deposit': None,
         }
 
 
@@ -87,7 +87,10 @@ class TeamHasDepositGetDepositInfoTests(GetDepositInfoTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_return_correct_data(self):
-        self.expected_data['invest_amount'] = self.deposit.invest_amount
+        self.expected_data['invest_amount'] = {
+            'invest_amount': self.deposit.invest_amount,
+            'last_change': self.deposit.last_change
+        }
         self.assertJSONEqual(self.response.content, self.expected_data)
 
 

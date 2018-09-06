@@ -28,11 +28,14 @@ def get_deposit_info(team):
             'bank_id': team.bank.id,
             'bank_name': team.bank.name,
         },
-        'invest_amount': None
+        'deposit': None
     }
     team_deposit = get_team_deposit(team)
     if team_deposit:
-        deposit_info['invest_amount'] = team_deposit.invest_amount
+        deposit_info['deposit'] = {
+            'invest_amount': team_deposit.invest_amount,
+            'last_change': team_deposit.last_change
+        }
     return deposit_info
 
 
