@@ -20,7 +20,7 @@ class Command(BaseCommand):
             share_deals = ShareDeal.objects.filter(team=team)
             for share_deal in share_deals:
                 share_current_half_year_price = (
-                    share_deal.sharetype.stock_price.filter(
+                    share_deal.share_type.stock_price.filter(
                         half_year=current_half_year)[0].buy_price
                 )
                 team.card.money_amount += (

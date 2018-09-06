@@ -1,10 +1,20 @@
-from .models import ShareDeal
+import json
+
+from .models import ShareDeal, ShareType
 
 import cards.check_card_view_helpers as check_card
 
 
-def get_share_info(data):
-    team = check_card.get_team_by_card(data)
+def fetch_share_info_response(request):
+    check_card_response = check_card.fetch_check_card_response(request)
+    if not check_card_response.get('success'):
+        return check_card_response
+
+    data = json.loads(request.body.decode("utf-8"))
+    card_type = data.get('card_type')
+    card = data.get('card')
+
+    team = check_card.get_team_by_card(card_type, card)
     share_info = {
         'team_name': team.name,
         'team_owner': team.owner,
@@ -22,13 +32,12 @@ def get_share_info(data):
 
 
 def get_team_shares(team):
-    share_deals = models.ShareDeal.objects.filter(team=team)
+    share_deals = ShareDeal.objects.filter(team=team)
     team_shares = [
-        share_type = share_deal.share_type
-        share = {
-            'share_name': sharetype.name,
-            'share_count': share_deal.count
+        {
+            'share_name': share_deal.share_type.name,
+            'share_amount': share_deal.amount
         }
         for share_deal in share_deals
     ]
-    return teams_shares
+    return team_shares

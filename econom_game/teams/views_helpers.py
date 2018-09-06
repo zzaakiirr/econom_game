@@ -9,23 +9,13 @@ import stations.create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
 
 
-def get_received_data(request):
+def fetch_create_team_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    error_response = get_error_response(data)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
-
-
-def get_error_response(data):
     expected_fields = (
-        "name", "owner", "faculty", "group", "bank", "card", "card_type"
+        "name", "owner", "faculty", "group",
+        "bank", "card", "card_type"
     )
-
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
     )
@@ -33,7 +23,6 @@ def get_error_response(data):
         return helpers.get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
-    response = {}
     name = data.get("name")
     owner = data.get("owner")
     faculty = data.get("faculty")
@@ -42,12 +31,36 @@ def get_error_response(data):
     card = data.get("card")
     card_type = data.get("card_type")
 
-    response = check_card.get_card_error_response(
-        data, check_has_card_team=False
+    error_response = get_error_response(
+        name, owner, faculty, group,
+        bank, card_type, card
     )
-    if response.get('error'):
-        return response
+    if error_response:
+        error_response['success'] = False
+        return error_response
 
+    new_team = create_new_team(
+        name, owner, faculty, group,
+        bank, card_type, card
+    )
+    if not new_team._state.db:
+        return {
+            "success": False,
+            "error": "Команда не была добавлена в базу данных"
+        }
+
+    return {"success": True}
+
+
+def get_error_response(name, owner, faculty, group, bank, card_type, card):
+    card_error_response = check_card.get_card_error_response(
+        card_type, card,
+        check_has_card_team=False
+    )
+    if card_error_response.get('error'):
+        return card_error_response
+
+    response = {}
     if not helpers.is_unique_field('name', name, Team):
         response['error'] = 'Команда с именем "%s" уже существует' % name
 
@@ -57,7 +70,7 @@ def get_error_response(data):
     elif not is_object_exist(object_id=bank, object_model=Bank):
         response['error'] = 'Такого банка не существует'
 
-    if check_card.get_team_by_card(data):
+    if check_card.get_team_by_card(card_type, card):
         response['error'] = 'Команда с такой картой уже существует'
 
     return response
@@ -72,16 +85,12 @@ def is_object_exist(object_id, object_model):
         return True
 
 
-def create_new_team(data):
-    card = check_card.get_card_from_db(
-        data.get('card_type'),
-        data.get('card')
-    )
-    bank = Bank.objects.get(id=data.get('bank'))
-
+def create_new_team(name, owner, faculty, group, bank, card_type, card):
+    card = check_card.get_card_from_db(card_type, card)
+    bank = Bank.objects.get(id=bank)
     new_team = Team.objects.create(
-        name=data.get('name'), owner=data.get('owner'),
-        faculty=data.get('faculty'), group=data.get('group'),
+        name=name, owner=owner,
+        faculty=faculty, group=group,
         bank=bank, card=card
     )
     return new_team

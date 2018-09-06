@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 from .models import Bank
-from transactions.confirm_transaction_view_helpers import is_user_operator
+from transactions.confirm_transaction_helpers import is_user_operator
 
 
 def get_banks_list(request):

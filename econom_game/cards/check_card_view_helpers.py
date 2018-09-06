@@ -7,21 +7,10 @@ from .models import Card
 import stations.create_station_view_helpers as helpers
 
 
-def get_received_data(request):
+def fetch_check_card_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    error_response = get_error_response(data)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
-
-
-def get_error_response(data):
     expected_fields = ("card_type", "card")
-
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
     )
@@ -29,16 +18,24 @@ def get_error_response(data):
         return helpers.get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
-    error_response = get_card_error_response(data)
-    if error_response:
-        return error_response
-    return None
-
-
-def get_card_error_response(data, check_has_card_team=True):
-    response = {}
     card_type = data.get("card_type")
     card = data.get("card")
+
+    error_response = get_card_error_response(card_type, card)
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    team = get_team_by_card(card_type, card)
+    response = {
+        'success': True,
+        'team_name': team.name
+    }
+    return response
+
+
+def get_card_error_response(card_type, card, check_has_card_team=True):
+    response = {}
 
     if not is_valid_card_type(card_type):
         response['error'] = 'Неверный формат типа карты'
@@ -53,7 +50,7 @@ def get_card_error_response(data, check_has_card_team=True):
         response['error'] = 'Такой карты не существует'
 
     if not response and check_has_card_team:
-        if not get_team_by_card(data):
+        if not get_team_by_card(card_type, card):
             response['error'] = 'У этой карты нет команды'
 
     return response
@@ -90,9 +87,7 @@ def get_card_from_db(card_type, card):
     return card
 
 
-def get_team_by_card(data):
-    card = data.get('card')
-    card_type = data.get('card_type')
+def get_team_by_card(card_type, card):
     for team in Team.objects.all():
         team_card = get_team_card(team)
         if team_card:

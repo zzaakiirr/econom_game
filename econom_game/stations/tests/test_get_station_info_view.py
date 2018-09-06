@@ -21,9 +21,6 @@ class GetStationInfoTestCase(TestCase):
         self.url = reverse("get_station_info")
         self.response = self.client.get(self.url)
 
-    def test_return_success_status_code(self):
-        self.assertEquals(self.response.status_code, 200)
-
 
 class StationAdminGetStationInfoTests(GetStationInfoTestCase):
     def setUp(self):
@@ -37,6 +34,9 @@ class StationAdminGetStationInfoTests(GetStationInfoTestCase):
         self.client.force_login(user)
 
         self.response = self.client.get(self.url)
+
+    def test_return_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
 
     def test_return_correct_data(self):
         expected_data = {
@@ -57,6 +57,9 @@ class NotStationAdminGetStationInfoTests(GetStationInfoTestCase):
     def setUp(self):
         super().setUp()
         self.response = self.client.get(self.url)
+
+    def test_return_success_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
 
     def test_return_correct_data(self):
         expected_data = {'success': False, 'error': 'Недостаточно прав'}

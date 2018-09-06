@@ -7,11 +7,14 @@ class ShareRate(models.Model):
     buy_price = models.FloatField()
     half_year = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return 'share_rate_%d' % self.id
+
 
 class ShareType(models.Model):
     name = models.CharField(max_length=30, unique=True)
     amount = models.FloatField()
-    stock_price = models.ManyToManyField(ShareRate, related_name='sharetype')
+    stock_price = models.ManyToManyField(ShareRate, related_name='share_type')
 
     def __str__(self):
         return 'shareholder_%d' % self.id
@@ -19,8 +22,8 @@ class ShareType(models.Model):
 
 class ShareDeal(models.Model):
     team = models.ForeignKey(Team)
-    sharetype = models.ForeignKey(ShareType, related_name='share_deal')
+    share_type = models.ForeignKey(ShareType, related_name='share_deal')
     amount = models.FloatField(default=0)
 
     def __str__(self):
-        return 'deal%d' % self.id
+        return 'deal_%d' % self.id

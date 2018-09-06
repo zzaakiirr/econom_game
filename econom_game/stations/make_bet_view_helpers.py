@@ -7,22 +7,10 @@ from . import create_station_view_helpers as helpers
 import cards.check_card_view_helpers as check_card
 
 
-def get_received_data(request):
+def fetch_make_bet_response(request):
     data = json.loads(request.body.decode("utf-8"))
 
-    station_admin = get_station_admin(request)
-    station = station_admin.station
-    error_response = get_error_response(data, station)
-    if error_response:
-        error_response['success'] = False
-        return error_response
-
-    data['success'] = True
-    return data
-
-
-def get_error_response(data, station):
-    expected_fields = ('bet_amount', 'card_type', 'card')
+    expected_fields = ('card_type', 'card', 'bet_amount')
     not_received_fields = helpers.get_not_recieved_fields(
         data, expected_fields
     )
@@ -30,13 +18,41 @@ def get_error_response(data, station):
         return helpers.get_not_received_all_expected_fields_error_response(
             not_received_fields)
 
-    bet_amount = data.get("bet_amount")
     card_type = data.get("card_type")
     card = data.get("card")
+    bet_amount = data.get("bet_amount")
 
-    response = check_card.get_card_error_response(data)
+    card_error_response = check_card.get_card_error_response(card_type, card)
+    if card_error_response.get('error'):
+        card_error_response['success'] = False
+        return card_error_response
 
-    if not is_team_for_first_time_in_station(data, station):
+    station_admin = get_station_admin(request)
+    station = station_admin.station
+    team = check_card.get_team_by_card(card_type, card)
+
+    error_response = get_error_response(team, station, bet_amount)
+    if error_response:
+        error_response['success'] = False
+        return error_response
+
+    team_card = check_card.get_team_card(team)
+    exclude_bet_amount_from_card(team_card, bet_amount)
+
+    transaction = create_new_transaction(team, station, bet_amount)
+    if not transaction._state.db:
+        return JsonResponse({
+            "success": False,
+            "error": "Транзакция не была добавлена в базу данных"
+        })
+
+    return {"success": True}
+
+
+def get_error_response(team, station, bet_amount):
+    response = {}
+
+    if not is_team_for_first_time_in_station(team, station):
         response['error'] = 'Команда уже проходила станцию'
 
     elif not helpers.is_value_positive_integer(bet_amount):
@@ -45,7 +61,7 @@ def get_error_response(data, station):
     elif not is_valid_bet(bet_amount, station):
         response['error'] = 'Ставка меньше минимальной или больше максимальной'
 
-    elif not is_enough_money_on_card(data, bet_amount):
+    elif not is_enough_money_on_card(team, bet_amount):
         response['error'] = 'Недостаточно средств на карте'
 
     return response
@@ -62,8 +78,7 @@ def is_valid_bet(bet_amount, station):
     return station.min_bet <= bet_amount <= station.max_bet
 
 
-def is_enough_money_on_card(data, money_amount):
-    team = check_card.get_team_by_card(data)
+def is_enough_money_on_card(team, money_amount):
     if team:
         card = check_card.get_team_card(team)
         if card.money_amount < money_amount:
@@ -71,8 +86,7 @@ def is_enough_money_on_card(data, money_amount):
     return True
 
 
-def is_team_for_first_time_in_station(data, station):
-    team = check_card.get_team_by_card(data)
+def is_team_for_first_time_in_station(team, station):
     transactions = Transaction.objects.all()
     if transactions and team:
         for transaction in transactions:
@@ -82,25 +96,18 @@ def is_team_for_first_time_in_station(data, station):
     return True
 
 
-def exclude_bet_amount_from_card(data):
-    team = check_card.get_team_by_card(data)
-    card = check_card.get_team_card(team)
-    bet_amount = data.get('bet_amount')
-    card.money_amount -= bet_amount
-    card.save()
+def exclude_bet_amount_from_card(team_card, bet_amount):
+    team_card.money_amount -= bet_amount
+    team_card.save()
     return True
 
 
-def create_new_transaction(request, data):
-    team = check_card.get_team_by_card(data)
-    station = get_station_admin(request).station
-
+def create_new_transaction(team, station, bet_amount):
     new_transaction = Transaction.objects.create(
         sender=team,
         recipient=station,
-        amount=data.get('bet_amount'),
+        amount=bet_amount,
         victory=False,
         processed=False
     )
-
     return new_transaction
