@@ -73,7 +73,7 @@ class TeamHasDepositGetDepositInfoTests(GetDepositInfoTestCase):
     def setUp(self):
         super().setUp()
         self.deposit = Deposit.objects.create(
-            id=1, team=self.team, bank=self.bank, invest_amount=100,
+            id=1, team=self.team, bank=self.bank, invest_amount=100.0,
         )
         self.user = User.objects.create(email='test@test', password='test')
         Operator.objects.create(user=self.user, bank=self.bank)
@@ -87,14 +87,14 @@ class TeamHasDepositGetDepositInfoTests(GetDepositInfoTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_return_correct_data(self):
-        self.expected_data['invest_amount'] = {
+        self.expected_data['deposit'] = {
             'invest_amount': self.deposit.invest_amount,
-            'last_change': self.deposit.last_change
+            'last_change': str(self.deposit.last_change)[:-3]
         }
         self.assertJSONEqual(self.response.content, self.expected_data)
 
 
-class TeamHasDepositGetDepositInfoTests(GetDepositInfoTestCase):
+class TeamHasNotDepositGetDepositInfoTests(GetDepositInfoTestCase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.create(email='test@test', password='test')
